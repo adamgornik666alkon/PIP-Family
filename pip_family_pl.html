@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>PIP Family</title>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="PIP Family"/>
+<meta name="theme-color" content="#3D2C5E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --sand:#FAF7F2;--sand-dark:#F0EBE1;--sand-mid:#E8E1D6;
+  --plum:#3D2C5E;--plum-light:#6B52A0;--plum-pale:#EEE9F8;
+  --coral:#F07B6B;--coral-pale:#FEF0EE;
+  --mint:#4DBFA8;--mint-pale:#E8F8F5;--mint-dark:#2E9E8A;
+  --amber:#F5A623;--amber-pale:#FEF5E7;--amber-dark:#C4831A;
+  --red:#E05050;--red-pale:#FDEEEE;--red-dark:#B83A3A;
+  --blue:#4A7FC1;--blue-pale:#EAF1FB;
+  --text-dark:#1C1520;--text-mid:#5C4F72;--text-soft:#9B8FAF;
+  --white:#FFFFFF;
+  --r-sm:10px;--r-md:16px;--r-lg:24px;
+}
+body{font-family:'Inter',sans-serif;background:var(--sand);color:var(--text-dark);min-height:100vh;font-size:15px;}
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* Sidebar */
+.sidebar{width:218px;min-width:218px;background:var(--plum);display:flex;flex-direction:column;padding:26px 0 20px;overflow-y:auto;}
+.s-logo{padding:0 22px 26px;display:flex;align-items:center;gap:10px;}
+.s-logo-icon{width:34px;height:34px;border-radius:9px;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;}
+.s-logo-text{font-family:'Lora',serif;font-size:16px;color:#fff;font-weight:600;}
+.s-logo-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.04em;text-transform:uppercase;margin-top:1px;}
+.s-sec{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);padding:14px 22px 5px;}
+.s-nav{display:flex;align-items:center;gap:9px;padding:9px 22px;cursor:pointer;color:rgba(255,255,255,.6);font-size:13px;font-weight:500;transition:all .12s;position:relative;}
+.s-nav:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.07);}
+.s-nav.active{color:#fff;background:rgba(255,255,255,.12);}
+.s-nav.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--coral);border-radius:0 3px 3px 0;}
+.s-nav i{font-size:16px;}
+.s-family{margin-top:auto;padding:18px 22px 0;border-top:1px solid rgba(255,255,255,.1);}
+.s-family-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:8px;}
+.fav-row{display:flex;gap:7px;flex-wrap:wrap;}
+.fav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:2px solid rgba(255,255,255,.18);cursor:default;position:relative;}
+.fav-tip{display:none;position:absolute;bottom:calc(100%+5px);left:50%;transform:translateX(-50%);background:var(--text-dark);color:#fff;font-size:10px;padding:2px 7px;border-radius:5px;white-space:nowrap;}
+.fav:hover .fav-tip{display:block;}
+.av-adam{background:var(--plum-pale);color:var(--plum);}
+.av-monika{background:var(--coral-pale);color:var(--coral);}
+.av-other{background:var(--mint-pale);color:var(--mint-dark);}
+.av-wspolny{background:var(--amber-pale);color:var(--amber-dark);}
+
+/* Main */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--sand);}
+.topbar{padding:22px 30px 0;display:flex;align-items:flex-start;justify-content:space-between;}
+.g-eyebrow{font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;}
+.g-title{font-family:'Lora',serif;font-size:21px;font-weight:600;color:var(--plum);}
+.g-sub{font-size:13px;color:var(--text-mid);margin-top:2px;}
+.motto{background:var(--plum-pale);color:var(--plum-light);font-size:11px;font-weight:500;padding:6px 13px;border-radius:100px;white-space:nowrap;margin-top:4px;}
+.content{padding:18px 30px 40px;flex:1;}
+.page{display:none;flex-direction:column;gap:22px;}
+.page.on{display:flex;}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:13px;}
+.sec-title{font-family:'Lora',serif;font-size:17px;font-weight:600;color:var(--plum);}
+.sec-link{font-size:12px;color:var(--plum-light);cursor:pointer;font-weight:500;}
+.sec-link:hover{text-decoration:underline;}
+
+/* Cards */
+.card{background:var(--white);border-radius:var(--r-lg);padding:20px 22px;}
+.card-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--plum);margin-bottom:15px;}
+
+/* Summary strip */
+.strip{background:var(--plum);border-radius:var(--r-lg);padding:18px 22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;color:#fff;min-width:0;}
+.strip-label{font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.strip-val{font-size:19px;font-weight:600;}
+.strip-sub{font-size:11px;opacity:.45;margin-top:1px;}
+.pos{color:#7EECD4;}.neg{color:#F5A0A0;}
+
+/* Goal cards */
+.goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g-card{background:var(--white);border-radius:var(--r-lg);padding:20px 20px 16px;position:relative;overflow:hidden;border:1.5px solid transparent;transition:transform .14s;}
+.g-card:hover{transform:translateY(-2px);}
+.g-card.safe{border-color:rgba(77,191,168,.25);}
+.g-card.warn{border-color:rgba(245,166,35,.3);}
+.g-card.risk{border-color:rgba(224,80,80,.25);}
+.g-blob{position:absolute;top:-18px;right:-18px;width:90px;height:90px;border-radius:50%;opacity:.11;}
+.safe .g-blob{background:var(--mint);}
+.warn .g-blob{background:var(--amber);}
+.risk .g-blob{background:var(--red);}
+.g-emoji{font-size:26px;margin-bottom:9px;display:block;}
+.g-name{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--text-dark);margin-bottom:3px;}
+.g-outcome{font-size:12px;color:var(--text-mid);margin-bottom:12px;line-height:1.4;}
+.g-track{height:7px;background:var(--sand-dark);border-radius:100px;overflow:hidden;margin-bottom:9px;}
+.g-fill{height:100%;border-radius:100px;}
+.safe .g-fill{background:var(--mint);}
+.warn .g-fill{background:var(--amber);}
+.risk .g-fill{background:var(--red);}
+.g-footer{display:flex;align-items:center;justify-content:space-between;}
+.g-pct{font-size:12px;font-weight:600;color:var(--text-dark);}
+
+/* Decision chips */
+.d-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.d-chip{background:var(--white);border-radius:var(--r-md);padding:13px 15px;border-left:3px solid var(--mint);}
+.d-chip.bad{border-left-color:var(--red);}
+.d-chip-name{font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:3px;}
+.d-chip-date{font-size:11px;color:var(--text-soft);}
+.d-chip-saving{font-size:14px;font-weight:600;color:var(--mint);margin-top:5px;}
+.d-chip.bad .d-chip-saving{color:var(--red);}
+
+/* Achievements */
+.ach-row{display:flex;gap:11px;overflow-x:auto;padding-bottom:3px;}
+.ach{background:var(--white);border-radius:var(--r-md);padding:13px 16px;min-width:150px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;border:1.5px solid var(--plum-pale);flex-shrink:0;}
+.ach-icon{font-size:24px;}
+.ach-title{font-size:11px;font-weight:600;color:var(--plum);line-height:1.3;}
+.ach-date{font-size:10px;color:var(--text-soft);}
+.ach.locked{opacity:.38;filter:grayscale(1);}
+
+/* Forms */
+.fl{font-size:12px;color:var(--text-soft);display:block;margin-bottom:4px;font-weight:500;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
+.fg{margin-bottom:11px;}
+input[type=text],input[type=number],input[type=month],input[type=date],select{
+  width:100%;padding:9px 13px;border:1.5px solid var(--sand-dark);border-radius:var(--r-sm);
+  font-size:13px;background:var(--sand);color:var(--text-dark);outline:none;font-family:'Inter',sans-serif;transition:border-color .14s;
+}
+input:focus,select:focus{border-color:var(--plum-light);background:var(--white);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .13s;}
+.btn-primary{background:var(--coral);color:#fff;}
+.btn-primary:hover{background:#e06a5a;}
+.btn-ghost{background:none;color:var(--plum-light);border:1.5px solid var(--plum-pale);}
+.btn-ghost:hover{background:var(--plum-pale);}
+.btn-danger{background:none;color:var(--red);border:1.5px solid var(--red-pale);}
+.btn-danger:hover{background:var(--red-pale);}
+.btn-icon{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:7px;background:var(--sand-dark);border:none;cursor:pointer;color:var(--text-soft);font-size:13px;transition:all .13s;}
+.btn-icon:hover{background:var(--red-pale);color:var(--red);}
+
+/* List rows */
+.lrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--sand-dark);}
+.lrow:last-child{border-bottom:none;}
+.lrow-left{display:flex;align-items:center;gap:11px;}
+.lrow-name{font-size:13px;font-weight:600;color:var(--text-dark);}
+.lrow-sub{font-size:11px;color:var(--text-soft);margin-top:1px;}
+.lrow-amt{font-size:13px;font-weight:600;}
+.income-amt{color:var(--mint-dark);}
+.expense-amt{color:var(--red);}
+.cat-icon{width:32px;height:32px;border-radius:9px;background:var(--sand-dark);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text-mid);flex-shrink:0;}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+
+/* Score */
+.score-wrap{display:flex;align-items:center;gap:26px;}
+.score-rows{flex:1;display:flex;flex-direction:column;gap:9px;}
+.score-row{display:flex;align-items:center;gap:10px;font-size:12px;}
+.score-lbl{color:var(--text-soft);flex:1;}
+.score-track{flex:1.5;height:5px;background:var(--sand-dark);border-radius:3px;overflow:hidden;}
+.score-fill{height:100%;border-radius:3px;background:var(--mint);}
+.score-fill.warn{background:var(--amber);}
+.score-fill.bad{background:var(--red);}
+.score-num{font-weight:600;color:var(--text-dark);min-width:22px;text-align:right;}
+
+/* What if */
+.wi-hero{background:var(--plum);border-radius:var(--r-lg);padding:22px 26px;color:#fff;}
+.wi-hero-eyebrow{font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
+.wi-hero-title{font-family:'Lora',serif;font-size:19px;font-weight:600;margin-bottom:3px;}
+.wi-hero-sub{font-size:13px;opacity:.6;margin-bottom:18px;}
+.wi-input-row{display:flex;gap:9px;align-items:center;}
+.wi-euro{font-size:20px;font-weight:600;opacity:.5;}
+.wi-input-row input{flex:1;padding:11px 15px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--r-sm);color:#fff;font-size:17px;font-weight:600;font-family:'Inter',sans-serif;outline:none;}
+.wi-input-row input::placeholder{color:rgba(255,255,255,.3);}
+.wi-input-row input:focus{border-color:var(--coral);}
+.wi-results{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.wi-card{background:rgba(255,255,255,.1);border-radius:var(--r-md);padding:13px 15px;}
+.wi-card-label{font-size:10px;opacity:.5;margin-bottom:3px;}
+.wi-card-val{font-size:14px;font-weight:600;}
+.wi-card-val.ok{color:#7EECD4;}.wi-card-val.warn{color:#FCD974;}.wi-card-val.bad{color:#F5A0A0;}
+.wi-narr{margin-top:14px;background:rgba(255,255,255,.08);border-radius:var(--r-sm);padding:13px 15px;font-size:13px;line-height:1.6;opacity:.85;border-left:3px solid var(--coral);}
+.wi-best-date{margin-top:12px;background:rgba(77,191,168,.15);border-radius:var(--r-sm);padding:11px 15px;font-size:13px;border-left:3px solid #7EECD4;}
+
+/* ── CALENDAR MODULE ── */
+.add-event-recurring-info{background:var(--plum-pale);border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--plum);margin-bottom:11px;}
+
+.cal-wrap{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start;}
+.cal-main{display:flex;flex-direction:column;gap:14px;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;}
+.cal-month-title{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--plum);}
+.cal-nav{display:flex;gap:6px;}
+.cal-nav-btn{width:32px;height:32px;border-radius:8px;background:var(--white);border:1.5px solid var(--sand-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mid);font-size:15px;transition:all .12s;}
+.cal-nav-btn:hover{background:var(--plum-pale);border-color:var(--plum-pale);color:var(--plum);}
+.cal-grid-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
+.cal-day-name{text-align:center;font-size:10px;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;padding:5px 0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-cell{min-height:74px;background:var(--white);border-radius:10px;padding:6px 7px;cursor:pointer;border:1.5px solid transparent;transition:all .12s;display:flex;flex-direction:column;}
+.cal-cell:hover{border-color:var(--plum-pale);}
+.cal-cell.today{border-color:var(--coral);background:var(--coral-pale);}
+.cal-cell.selected{border-color:var(--plum-light);background:var(--plum-pale);}
+.cal-cell.other-month{opacity:.38;}
+.cal-cell.has-warning{background:#FFF8EE;}
+.cal-cell.has-danger{background:#FFF2F2;}
+.cal-date{font-size:12px;font-weight:600;color:var(--text-dark);margin-bottom:3px;}
+.cal-cell.today .cal-date{color:var(--coral);}
+.cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:2px;}
+.cal-dot{width:6px;height:6px;border-radius:50%;}
+.cal-dot.income,.cal-dot.salary,.cal-dot.extra_income{background:var(--mint);}
+.cal-dot.expense,.cal-dot.bill{background:var(--red);}
+.cal-dot.goal{background:var(--blue);}
+.cal-dot.purchase{background:var(--amber);}
+.cal-bal{font-size:9px;font-weight:600;margin-top:auto;}
+.cal-bal.pos{color:var(--mint-dark);}
+.cal-bal.neg{color:var(--red);}
+.cal-bal.warn{color:var(--amber-dark);}
+
+/* Sidebar panel */
+.cal-sidebar{display:flex;flex-direction:column;gap:13px;}
+.cal-day-panel{background:var(--white);border-radius:var(--r-lg);padding:18px 20px;}
+.cal-day-panel-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--plum);margin-bottom:4px;}
+.cal-day-panel-bal{font-size:22px;font-weight:600;margin-bottom:14px;}
+.cal-day-panel-bal.pos{color:var(--mint-dark);}
+.cal-day-panel-bal.neg{color:var(--red);}
+.cal-event{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--sand-dark);}
+.cal-event:last-child{border-bottom:none;}
+.cal-event-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.cal-event-name{font-size:13px;font-weight:500;color:var(--text-dark);flex:1;}
+.cal-event-amt{font-size:13px;font-weight:600;}
+.cal-event-amt.income-amt{color:var(--mint-dark);}
+.cal-event-amt.expense-amt{color:var(--red);}
+.cal-event-amt.goal-amt{color:var(--blue);}
+.cal-event-amt.purchase-amt{color:var(--amber-dark);}
+.cal-event-amt.bill-amt{color:var(--red);}
+.cal-event-amt.salary-amt{color:var(--mint-dark);}
+.cal-event-amt.extra_income-amt{color:var(--mint-dark);}
+
+/* Safe window */
+.safe-window{background:var(--mint-pale);border-radius:var(--r-md);padding:14px 16px;border-left:3px solid var(--mint);}
+.safe-window-title{font-size:13px;font-weight:600;color:var(--mint-dark);margin-bottom:3px;}
+.safe-window-body{font-size:12px;color:var(--text-mid);line-height:1.5;}
+
+/* Timeline */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:13px;padding:10px 0;border-bottom:1px solid var(--sand-dark);}
+.tl-item:last-child{border-bottom:none;}
+.tl-date{font-size:11px;font-weight:600;color:var(--text-soft);min-width:54px;padding-top:2px;}
+.tl-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.tl-body{flex:1;}
+.tl-name{font-size:13px;font-weight:600;color:var(--text-dark);}
+.tl-bal{font-size:11px;color:var(--text-soft);margin-top:1px;}
+.tl-amt{font-size:13px;font-weight:600;white-space:nowrap;}
+
+/* Add event */
+.add-event-form{background:var(--plum-pale);border-radius:var(--r-md);padding:15px 17px;}
+.add-event-title{font-size:13px;font-weight:600;color:var(--plum);margin-bottom:12px;}
+
+/* Data IO */
+.dio-card{background:var(--white);border-radius:var(--r-lg);padding:20px 22px;}
+.dio-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--plum);margin-bottom:5px;}
+.dio-sub{font-size:13px;color:var(--text-soft);margin-bottom:14px;line-height:1.5;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:600;}
+.status-pill.ok{background:var(--mint-pale);color:var(--mint-dark);}
+code{font-family:'SF Mono','Fira Code',monospace;background:var(--sand-dark);padding:1px 5px;border-radius:5px;font-size:11px;}
+
+/* Toast */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:999;}
+.toast{background:var(--plum);color:#fff;padding:11px 18px;border-radius:var(--r-md);font-size:13px;font-weight:500;opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .22s,transform .22s;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* ── ONBOARDING ── */
+.ob-overlay{position:fixed;inset:0;z-index:9999;background:var(--sand);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:20px;}
+.ob-wrap{width:100%;max-width:560px;margin:auto;}
+.ob-welcome{text-align:center;padding:48px 32px 40px;}
+.ob-welcome-icon{width:72px;height:72px;border-radius:22px;background:var(--coral);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:34px;}
+.ob-welcome-title{font-family:'Lora',serif;font-size:28px;font-weight:600;color:var(--plum);margin-bottom:10px;line-height:1.2;}
+.ob-welcome-sub{font-size:16px;color:var(--text-mid);line-height:1.6;margin-bottom:32px;max-width:400px;margin-left:auto;margin-right:auto;}
+.ob-actions{display:flex;flex-direction:column;gap:10px;align-items:center;}
+.ob-btn-main{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:var(--coral);color:#fff;border:none;border-radius:var(--r-md);font-size:16px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background .13s;}
+.ob-btn-main:hover{background:#e06a5a;}
+.ob-btn-demo{font-size:13px;color:var(--text-soft);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:6px;text-decoration:underline;}
+.ob-btn-demo:hover{color:var(--text-mid);}
+.ob-step{padding:8px 0 32px;}
+.ob-step-header{margin-bottom:28px;}
+.ob-progress{display:flex;gap:6px;margin-bottom:24px;}
+.ob-prog-dot{height:4px;border-radius:2px;flex:1;background:var(--sand-dark);transition:background .25s;}
+.ob-prog-dot.done{background:var(--coral);}
+.ob-prog-dot.active{background:var(--plum-light);}
+.ob-step-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--coral);font-weight:600;margin-bottom:6px;}
+.ob-step-title{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--plum);margin-bottom:6px;}
+.ob-step-sub{font-size:14px;color:var(--text-mid);line-height:1.5;}
+.ob-card{background:var(--white);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px;}
+.ob-added-list{display:flex;flex-direction:column;gap:0;margin-bottom:14px;}
+.ob-added-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--sand-dark);font-size:13px;}
+.ob-added-item:last-child{border-bottom:none;}
+.ob-added-name{font-weight:600;color:var(--text-dark);}
+.ob-added-sub{font-size:11px;color:var(--text-soft);}
+.ob-added-remove{width:24px;height:24px;border-radius:6px;background:var(--sand-dark);border:none;cursor:pointer;color:var(--text-soft);font-size:12px;display:flex;align-items:center;justify-content:center;}
+.ob-added-remove:hover{background:var(--red-pale);color:var(--red);}
+.ob-empty-hint{font-size:13px;color:var(--text-soft);text-align:center;padding:14px 0;}
+.ob-nav{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.ob-btn-back{background:none;border:1.5px solid var(--sand-dark);color:var(--text-mid);border-radius:var(--r-sm);padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.ob-btn-back:hover{background:var(--sand-dark);}
+.ob-btn-next{background:var(--plum);color:#fff;border:none;border-radius:var(--r-sm);padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:7px;transition:background .13s;}
+.ob-btn-next:hover{background:var(--plum-light);}
+.ob-skip{font-size:12px;color:var(--text-soft);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;}
+.ob-skip:hover{color:var(--text-mid);}
+.ob-member-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.ob-member-chip{display:flex;align-items:center;gap:7px;padding:7px 13px;background:var(--plum-pale);border-radius:100px;font-size:13px;font-weight:500;color:var(--plum);}
+.ob-member-chip button{background:none;border:none;cursor:pointer;color:var(--plum-light);font-size:14px;line-height:1;padding:0;}
+.ob-goal-suggestions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.ob-goal-sug{padding:10px 14px;background:var(--sand);border-radius:var(--r-sm);cursor:pointer;border:1.5px solid transparent;font-size:13px;font-weight:500;color:var(--text-dark);display:flex;align-items:center;gap:8px;transition:all .12s;}
+.ob-goal-sug:hover{background:var(--plum-pale);border-color:var(--plum-pale);color:var(--plum);}
+.ob-goal-sug.picked{background:var(--plum-pale);border-color:var(--plum-light);color:var(--plum);}
+.ob-complete{text-align:center;padding:40px 20px;}
+.ob-complete-icon{font-size:56px;margin-bottom:18px;}
+.ob-complete-title{font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--plum);margin-bottom:10px;}
+.ob-complete-sub{font-size:15px;color:var(--text-mid);line-height:1.6;margin-bottom:28px;}
+.ob-summary{background:var(--white);border-radius:var(--r-lg);padding:16px 20px;text-align:left;margin-bottom:24px;}
+.ob-summary-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--sand-dark);}
+.ob-summary-row:last-child{border-bottom:none;}
+.ob-summary-label{color:var(--text-soft);}
+.ob-summary-val{font-weight:600;color:var(--text-dark);}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — mobile first additions
+   Breakpoint: 700px
+══════════════════════════════════════ */
+
+/* Bottom nav — hidden on desktop */
+.bottom-nav{display:none;}
+
+@media(max-width:700px){
+
+  /* Shell becomes vertical stack */
+  .shell{flex-direction:column;height:100dvh;}
+
+  /* Hide desktop sidebar */
+  .sidebar{display:none;}
+
+  /* Main fills screen, leaves room for bottom nav */
+  .main{height:calc(100dvh - 60px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+  /* Topbar tighter */
+  .topbar{padding:14px 16px 0;flex-wrap:wrap;gap:8px;}
+  .g-title{font-size:18px;}
+  .motto{display:none;}
+
+  /* Content padding — extra bottom for fixed nav */
+  .content{padding:14px 16px 80px;}
+
+  /* All 2-col grids → 1 col */
+  .goals-grid,.frow,.d-chips,.cal-wrap{grid-template-columns:1fr!important;gap:12px;}
+  .frow{gap:0;}
+
+  /* Summary strip → 2-col on mobile */
+  .strip{grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
+  .strip-val{font-size:15px;}
+  .strip-label{font-size:9px;}
+
+  /* Goal cards — single col, comfortable height */
+  .g-card{padding:16px 16px 14px;}
+  .goals-grid{grid-template-columns:1fr!important;}
+  .g-emoji{font-size:22px;margin-bottom:7px;}
+  .g-name{font-size:14px;}
+
+  /* Calendar layout */
+  .cal-wrap{display:flex;flex-direction:column;gap:14px;}
+  .cal-cell{min-height:58px;padding:4px 5px;}
+  .cal-date{font-size:11px;}
+  .cal-bal{font-size:8px;}
+  .cal-dot{width:5px;height:5px;}
+
+  /* Cards full width */
+  .card{padding:16px 16px;border-radius:16px;}
+  .card-title{font-size:14px;}
+
+  /* Form rows single col */
+  .frow{grid-template-columns:1fr!important;}
+  .fg{margin-bottom:8px;}
+  input[type=text],input[type=number],input[type=month],input[type=date],select{
+    font-size:16px!important; /* prevents iOS zoom */
+    padding:11px 14px;
+  }
+
+  /* Buttons full width on mobile */
+  .ob-btn-main{width:100%;justify-content:center;}
+  .ob-actions{width:100%;}
+  /* Form submit buttons full width */
+  .card > .btn,.card > .btn-primary{width:100%;justify-content:center;margin-top:4px;}
+
+  /* Score section */
+  .score-wrap{flex-direction:column;align-items:center;}
+  .score-rows{width:100%;}
+
+  /* Timeline */
+  .tl-item{flex-wrap:wrap;gap:6px;}
+  .tl-date{min-width:40px;}
+
+  /* What if hero */
+  .wi-hero{padding:18px 16px;}
+  .wi-results{grid-template-columns:1fr 1fr;}
+  .wi-card{padding:10px 12px;}
+
+  /* Onboarding */
+  .ob-overlay{padding:0;align-items:flex-start;}
+  .ob-wrap{max-width:100%;padding:0 0 80px;}
+  .ob-welcome{padding:40px 20px 32px;}
+  .ob-welcome-title{font-size:22px;}
+  .ob-step{padding:8px 16px 32px;}
+  .ob-card{padding:16px;}
+  .ob-goal-suggestions{grid-template-columns:1fr 1fr;}
+  .ob-nav{padding:0;}
+
+  /* Achievements scroll */
+  .ach-row{padding-bottom:6px;}
+
+  /* ── Bottom navigation bar ── */
+  .bottom-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    height:60px;background:var(--plum);
+    z-index:100;border-top:1px solid rgba(255,255,255,.1);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .bn-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;cursor:pointer;color:rgba(255,255,255,.5);
+    font-size:9px;font-weight:600;letter-spacing:.03em;
+    text-transform:uppercase;padding:8px 4px;
+    border:none;background:none;font-family:'Inter',sans-serif;
+    transition:color .12s;
+  }
+  .bn-item i{font-size:20px;line-height:1;}
+  .bn-item.active{color:#fff;}
+  .bn-item.active i{color:var(--coral);}
+
+  /* Hamburger menu overlay */
+  .mob-menu-overlay{
+    display:none;position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,.45);
+  }
+  .mob-menu-overlay.open{display:block;}
+  .mob-menu-panel{
+    position:absolute;left:0;top:0;bottom:0;width:82vw;max-width:300px;
+    background:var(--plum);padding:28px 0 40px;overflow-y:auto;
+    transform:translateX(-100%);transition:transform .25s ease;
+  }
+  .mob-menu-overlay.open .mob-menu-panel{transform:translateX(0);}
+  .mob-menu-close{
+    position:absolute;top:16px;right:16px;width:32px;height:32px;
+    border-radius:8px;background:rgba(255,255,255,.15);
+    border:none;cursor:pointer;color:#fff;font-size:18px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mob-s-nav{display:flex;align-items:center;gap:9px;padding:11px 22px;cursor:pointer;color:rgba(255,255,255,.7);font-size:14px;font-weight:500;}
+  .mob-s-nav:hover,.mob-s-nav.active{color:#fff;background:rgba(255,255,255,.1);}
+  .mob-s-nav i{font-size:17px;}
+  .mob-s-sec{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);padding:14px 22px 4px;}
+}
+
+@media(max-width:400px){
+  /* Very small phones — 360px wide */
+  .cal-cell{min-height:46px;padding:3px 4px;}
+  .cal-date{font-size:10px;}
+  .cal-dots{gap:1px;}
+  .cal-dot{width:4px;height:4px;}
+  .cal-bal{display:none;}
+  .strip{grid-template-columns:1fr 1fr;}
+  .g-name{font-size:13px;}
+  .content{padding:12px 12px 80px;}
+  .topbar{padding:12px 12px 0;}
+}
+
+/* ── Add to cart / forms on mobile: bigger tap targets ── */
+@media(max-width:700px){
+  .btn,.btn-primary,.btn-ghost,.btn-danger,.ob-btn-main,.ob-btn-next,.ob-btn-back{
+    min-height:44px;
+  }
+  .btn-icon{width:36px;height:36px;}
+  .lrow{padding:13px 0;}
+  .ob-added-remove{width:32px;height:32px;}
+  
+  /* Nav items in mobile menu bigger touch targets */
+  .mob-s-nav{padding:13px 22px;}
+  
+  /* Calendar nav buttons bigger */
+  .cal-nav-btn{width:38px;height:38px;}
+  
+  /* Onboarding member chips easier to tap */
+  .ob-member-chip{padding:9px 14px;font-size:14px;}
+  .ob-member-chip button{font-size:18px;padding:0 4px;}
+  
+  /* Goal suggestion tiles — bigger tap */
+  .ob-goal-sug{padding:13px 14px;font-size:14px;}
+  
+  /* Score ring centred */
+  .score-wrap{gap:20px;}
+  
+  /* Achievement chips — horizontal scroll */
+  .ach{min-width:130px;}
+  
+  /* Safe window panel full width */
+  .safe-window{margin-top:0;}
+  
+  /* What-if input bigger on mobile */
+  .wi-input-row input{font-size:22px!important;padding:13px 16px;}
+}
+
+
+/* ── FAMILY INTEGRATION ── */
+.member-stat{font-size:10px;color:var(--text-soft);margin-top:2px;}
+.active-badge{font-size:10px;background:var(--coral-pale);color:var(--coral);padding:1px 7px;border-radius:100px;font-weight:600;margin-left:4px;}
+.role-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:100px;font-weight:600;}
+.role-admin{background:var(--coral-pale);color:var(--coral);}
+.role-adult{background:var(--mint-pale);color:var(--mint-dark);}
+.role-child{background:var(--blue-pale);color:var(--blue);}
+.who-chip{display:inline-block;font-size:10px;background:var(--plum-pale);color:var(--plum-light);padding:1px 6px;border-radius:100px;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-icon"><i class="ti ti-heart"></i></div>
+    <div><div class="s-logo-text">PIP Family</div><div class="s-logo-sub">Twoje cele</div></div>
+  </div>
+  <span class="s-sec">Główne</span>
+  <div class="s-nav active" onclick="go('home')"><i class="ti ti-home"></i> Moje cele</div>
+  <div class="s-nav" onclick="go('calendar')"><i class="ti ti-calendar-event"></i> Kalendarz</div>
+  <div class="s-nav" onclick="go('whatif')"><i class="ti ti-sparkles"></i> Co jeśli kupię?</div>
+  <div class="s-nav" onclick="go('decisions')"><i class="ti ti-star"></i> Moje decyzje</div>
+  <div class="s-nav" onclick="go('score')"><i class="ti ti-award"></i> Wynik rodziny</div>
+  <span class="s-sec">Ustawienia</span>
+  <div class="s-nav" onclick="go('income')"><i class="ti ti-cash"></i> Dochody</div>
+  <div class="s-nav" onclick="go('expenses')"><i class="ti ti-tag"></i> Stałe opłaty</div>
+  <div class="s-nav" onclick="go('goals-edit')"><i class="ti ti-target"></i> Zarządzaj celami</div>
+  <div class="s-nav" onclick="go('family')"><i class="ti ti-users"></i> Rodzina i role</div>
+  <div class="s-nav" onclick="go('audit')" id="nav-audit" style="display:none;"><i class="ti ti-history"></i> Historia zmian</div>
+  <div class="s-nav" onclick="go('dataio')"><i class="ti ti-cloud"></i> Dane i kopie</div>
+  <div class="s-family">
+    <div class="s-family-label">Nasza rodzina</div>
+    <div class="fav-row" id="fav-row"></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="g-eyebrow" id="top-eyebrow">Piątek, 19 czerwca</div>
+      <div class="g-title" id="top-title">Dzień dobry!</div>
+      <div class="g-sub" id="top-sub">Sprawdź jak idzie realizacja Waszych marzeń.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+      <div class="motto">Wasze pieniądze pracują na Wasze marzenia</div>
+      <div id="current-user-display"></div>
+    </div>
+  </div>
+  <div class="content">
+
+  <!-- HOME -->
+  <div class="page on" id="page-home">
+    <div class="strip" id="home-strip"></div>
+    <div>
+      <div class="sec-head"><div class="sec-title">Wasze cele</div><span class="sec-link" onclick="go('goals-edit')">+ dodaj cel</span></div>
+      <div class="goals-grid" id="goals-grid"></div>
+    </div>
+    <div>
+      <div class="sec-head"><div class="sec-title">Nadchodzące płatności</div><span class="sec-link" onclick="go('calendar')">kalendarz →</span></div>
+      <div class="card" id="home-upcoming"></div>
+    </div>
+    <div>
+      <div class="sec-head"><div class="sec-title">Ostatnie dobre decyzje</div><span class="sec-link" onclick="go('decisions')">wszystkie →</span></div>
+      <div class="d-chips" id="home-decisions"></div>
+    </div>
+    <div>
+      <div class="sec-head"><div class="sec-title">Osiągnięcia</div></div>
+      <div class="ach-row" id="ach-row"></div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="page" id="page-calendar">
+    <div class="cal-wrap">
+      <div class="cal-main">
+        <div class="cal-header">
+          <div class="cal-month-title" id="cal-month-title"></div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calPrev()"><i class="ti ti-chevron-left"></i></button>
+              <button class="cal-nav-btn" onclick="calNext()"><i class="ti ti-chevron-right"></i></button>
+            </div>
+            <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="calToday()">Dziś</button>
+          </div>
+        </div>
+        <div class="cal-grid-header" id="cal-grid-header"></div>
+        <div class="cal-grid" id="cal-grid"></div>
+
+        <!-- Add event -->
+        <div class="add-event-form">
+          <div class="add-event-title"><i class="ti ti-plus" style="margin-right:5px;"></i>Dodaj do kalendarza</div>
+          <div class="frow">
+            <div class="fg"><label class="fl">Co planujesz?</label>
+              <select id="ev-type" onchange="onEvTypeChange()">
+                <option value="extra_income">💚 Dodatkowy wpływ pieniędzy</option>
+                <option value="expense">🔴 Planowany wydatek</option>
+                <option value="goal">🎯 Odkładam na marzenie</option>
+                <option value="purchase">🛒 Chcę to kupić</option>
+                <option value="salary">💰 Wynagrodzenie (cykliczne)</option>
+                <option value="bill">🔁 Miesięczna opłata (cykliczna)</option>
+              </select>
+            </div>
+            <div class="fg" id="ev-date-wrap"><label class="fl">Kiedy?</label><input type="date" id="ev-date"/></div>
+          </div>
+          <div id="ev-recurring-wrap" style="display:none;margin-bottom:11px;">
+            <div style="background:var(--plum-pale);border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--plum);">
+              <i class="ti ti-refresh" style="margin-right:5px;font-size:14px;"></i>
+              <strong>Cykliczne</strong> — pojawi się automatycznie w każdym miesiącu
+              <div style="margin-top:8px;">
+                <label class="fl">Dzień miesiąca</label>
+                <input type="number" id="ev-day" placeholder="np. 1" min="1" max="31" style="max-width:100px;"/>
+              </div>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label class="fl" id="ev-name-label">Nazwa</label>
+              <input type="text" id="ev-name" placeholder="np. Dentysta"/>
+            </div>
+            <div class="fg"><label class="fl">Kwota (EUR)</label>
+              <input type="number" id="ev-amt" placeholder="np. 150" min="0"/>
+            </div>
+          </div>
+          <div class="fg" id="ev-who-wrap">
+            <label class="fl">Kto planuje?</label>
+            <select id="ev-who"></select>
+          </div>
+          <div id="ev-goal-wrap" style="display:none;margin-bottom:11px;">
+            <label class="fl">Na które marzenie?</label>
+            <select id="ev-goal-select"></select>
+          </div>
+          <div id="ev-examples" style="font-size:11px;color:var(--text-soft);margin-bottom:10px;"></div>
+          <button class="btn btn-primary" onclick="addCalEvent()"><i class="ti ti-plus"></i> Dodaj do kalendarza</button>
+        </div>
+      </div>
+
+      <!-- Calendar sidebar -->
+      <div class="cal-sidebar">
+        <div class="cal-day-panel" id="cal-day-panel">
+          <div class="cal-day-panel-title">Wybierz dzień</div>
+          <div style="font-size:13px;color:var(--text-soft);">Kliknij na dzień w kalendarzu, aby zobaczyć szczegóły.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+            Nadchodzące zdarzenia
+            <span style="font-size:11px;color:var(--plum-light);cursor:pointer;" onclick="renderCalEventList()">zarządzaj</span>
+          </div>
+          <div class="timeline" id="cal-timeline"></div>
+          <div id="cal-event-list" style="display:none;"></div>
+        </div>
+        <div id="safe-window-panel"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT IF -->
+  <div class="page" id="page-whatif">
+    <div class="wi-hero">
+      <div class="wi-hero-eyebrow">Zanim zdecydujesz</div>
+      <div class="wi-hero-title">Co stanie się z Waszymi planami?</div>
+      <div class="wi-hero-sub">Wpisz kwotę planowanego zakupu — sprawdzimy razem.</div>
+      <div class="wi-input-row">
+        <span class="wi-euro">€</span>
+        <input type="number" id="wi-amt" placeholder="0" min="0" oninput="calcWI()"/>
+      </div>
+      <div class="wi-results" id="wi-results" style="display:none;"></div>
+      <div class="wi-narr" id="wi-narr" style="display:none;"></div>
+      <div class="wi-best-date" id="wi-best-date" style="display:none;"></div>
+    </div>
+    <div class="card"><div class="card-title">Ostatnio sprawdzane</div><div id="wi-history"></div></div>
+  </div>
+
+  <!-- DECISIONS -->
+  <div class="page" id="page-decisions">
+    <div class="card">
+      <div class="card-title">Zapisz dobrą decyzję</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Typ</label><select id="dec-type"><option value="good">Dobra decyzja ✓</option><option value="bad">Nieplanowany wydatek</option></select></div>
+        <div class="fg"><label class="fl">Kwota (EUR)</label><input type="number" id="dec-amt" placeholder="np. 15" min="0"/></div>
+      </div>
+      <div class="fg"><label class="fl">Kto podjął tę decyzję?</label><select id="dec-who"></select></div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Co zrobiłeś/aś?</label><input type="text" id="dec-desc" placeholder="np. Domowa pizza"/></div>
+        <div class="fg"><label class="fl">Ile kosztowałaby alternatywa?</label><input type="number" id="dec-alt" placeholder="np. 45" min="0"/></div>
+      </div>
+      <button class="btn btn-primary" onclick="addDecision()"><i class="ti ti-check"></i> Zapisz</button>
+    </div>
+    <div class="card"><div class="card-title">Historia decyzji</div><div id="dec-list"></div></div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="page" id="page-score">
+    <div class="card"><div class="score-wrap" id="score-wrap"></div></div>
+    <div class="card"><div class="card-title">Jak poprawić wynik?</div><div id="score-tips" style="display:flex;flex-direction:column;gap:9px;"></div></div>
+  </div>
+
+  <!-- INCOME -->
+  <div class="page" id="page-income">
+    <div class="card">
+      <div class="card-title">Dodaj źródło dochodu</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Osoba</label><select id="inc-who"><option value="">— wybierz lub wpisz —</option></select></div>
+        <div class="fg"><label class="fl">Rodzaj</label><select id="inc-cat"><option>Wynagrodzenie</option><option>Bonus</option><option>Dodatkowy dochód</option><option>Inne</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Kwota (EUR)</label><input type="number" id="inc-amt" placeholder="np. 935" min="0"/></div>
+        <div class="fg"><label class="fl">Częstotliwość</label>
+          <select id="inc-freq" onchange="onIncFreqChange()">
+            <option value="weekly">📅 Co tydzień</option>
+            <option value="fortnightly">📅 Co dwa tygodnie</option>
+            <option value="monthly" selected>📅 Co miesiąc</option>
+            <option value="quarterly">📅 Co kwartał</option>
+            <option value="annual">📅 Raz w roku</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow" id="inc-day-wrap">
+        <div class="fg" id="inc-day-fg"><label class="fl" id="inc-day-label">Dzień miesiąca</label>
+          <input type="number" id="inc-day" placeholder="np. 25" min="1" max="31"/></div>
+        <div class="fg" id="inc-weekday-fg" style="display:none;"><label class="fl">Dzień tygodnia</label>
+          <select id="inc-weekday">
+            <option value="1">Poniedziałek</option>
+            <option value="2">Wtorek</option>
+            <option value="3">Środa</option>
+            <option value="4">Czwartek</option>
+            <option value="5" selected>Piątek</option>
+            <option value="6">Sobota</option>
+            <option value="0">Niedziela</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Opis (opcjonalny)</label><input type="text" id="inc-desc" placeholder="np. pensja netto"/></div>
+      <div id="inc-freq-hint" style="font-size:11px;color:var(--text-soft);margin-bottom:10px;"></div>
+      <button class="btn btn-primary" onclick="addIncome()"><i class="ti ti-plus"></i> Dodaj dochód</button>
+    </div>
+    <div class="card"><div class="card-title" id="inc-list-title">Wasze dochody</div><div id="income-list"></div></div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div class="page" id="page-expenses">
+    <div class="card">
+      <div class="card-title">Dodaj stałą opłatę</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Kategoria</label><select id="exp-cat">
+          <option>Mieszkanie</option><option>Media</option><option>Internet / telefon</option>
+          <option>Samochód</option><option>Paliwo</option><option>Ubezpieczenia</option>
+          <option>Szkoła dzieci</option><option>Zajęcia dzieci</option>
+          <option>Subskrypcje</option><option>Kieszonkowe</option><option>Inne</option>
+        </select></div>
+        <div class="fg"><label class="fl">Częstotliwość</label>
+          <select id="exp-freq" onchange="onExpFreqChange()">
+            <option value="weekly">📅 Co tydzień</option>
+            <option value="fortnightly">📅 Co dwa tygodnie</option>
+            <option value="monthly" selected>📅 Co miesiąc</option>
+            <option value="bimonthly">📅 Co dwa miesiące</option>
+            <option value="quarterly">📅 Co kwartał</option>
+            <option value="annual">📅 Raz w roku</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Kwota (EUR)</label><input type="number" id="exp-amt" placeholder="np. 1200" min="0"/></div>
+        <div class="fg" id="exp-day-fg"><label class="fl" id="exp-day-label">Dzień miesiąca</label>
+          <input type="number" id="exp-day" placeholder="np. 1" min="1" max="31"/></div>
+      </div>
+      <div class="fg"><label class="fl">Opis</label><input type="text" id="exp-desc" placeholder="np. czynsz"/></div>
+      <div id="exp-freq-hint" style="font-size:11px;color:var(--text-soft);margin-bottom:10px;"></div>
+      <button class="btn btn-primary" onclick="addExpense()"><i class="ti ti-plus"></i> Dodaj opłatę</button>
+    </div>
+    <div class="card"><div class="card-title" id="exp-list-title">Stałe opłaty</div><div id="expense-list"></div></div>
+  </div>
+
+  <!-- GOALS EDIT -->
+  <div class="page" id="page-goals-edit">
+    <div class="card">
+      <div class="card-title">Dodaj nowy cel</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Nazwa marzenia</label><input type="text" id="goal-name" placeholder="np. Wakacje w Polsce"/></div>
+        <div class="fg"><label class="fl">Emoji</label><input type="text" id="goal-emoji" placeholder="🏖" maxlength="4"/></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Czyj cel?</label><select id="goal-who"></select></div>
+        <div class="fg"><label class="fl">Typ celu</label>
+          <select id="goal-type">
+            <option value="family">👨‍👩‍👧 Cel rodzinny</option>
+            <option value="personal">👤 Cel osobisty</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Cel (EUR)</label><input type="number" id="goal-target" placeholder="np. 2000" min="0"/></div>
+        <div class="fg"><label class="fl">Już odłożono (EUR)</label><input type="number" id="goal-current" placeholder="np. 800" min="0"/></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Termin</label><input type="month" id="goal-deadline"/></div>
+        <div class="fg"><label class="fl">Miesięczna wpłata (EUR)</label><input type="number" id="goal-monthly" placeholder="np. 300" min="0"/></div>
+      </div>
+      <button class="btn btn-primary" onclick="addGoal()"><i class="ti ti-plus"></i> Dodaj cel</button>
+    </div>
+    <div class="card"><div class="card-title">Wasze cele</div><div id="goal-edit-list"></div></div>
+  </div>
+
+  <!-- DATA IO -->
+  <div class="page" id="page-dataio">
+    <div class="dio-card">
+      <div class="dio-title">Automatyczny zapis</div>
+      <div class="dio-sub">Dane są zapisywane automatycznie w Twojej przeglądarce na tym urządzeniu po każdej zmianie.</div>
+      <div id="autosave-status" style="margin-bottom:13px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="manualSave()"><i class="ti ti-device-floppy"></i> Zapisz teraz</button>
+        <button class="btn btn-danger" onclick="confirmReset()"><i class="ti ti-trash"></i> Wyczyść dane</button>
+        <button class="btn btn-ghost" onclick="loadDemo()" style="margin-top:8px;"><i class="ti ti-wand"></i> Wczytaj tryb demo</button>
+        <button class="btn btn-ghost" onclick="if(confirm('Uruchomić kreator konfiguracji?')){data.onboardingComplete=false;saveData();showOnboarding();obGo(0);}" style="margin-top:4px;"><i class="ti ti-refresh"></i> Uruchom kreator ponownie</button>
+      </div>
+    </div>
+    <div class="dio-card">
+      <div class="dio-title">Pobierz kopię danych</div>
+      <div class="dio-sub">Pobierz plik <code>pip_family.json</code> jako kopię zapasową lub aby przenieść dane na inne urządzenie.</div>
+      <button class="btn btn-ghost" onclick="exportJSON()"><i class="ti ti-download"></i> Pobierz pip_family.json</button>
+    </div>
+    <div class="dio-card">
+      <div class="dio-title">Wczytaj dane z pliku</div>
+      <div class="dio-sub">Wczytaj wcześniej pobrany plik <code>pip_family.json</code>. Zastąpi to obecne dane.</div>
+      <input type="file" id="import-file" accept=".json" onchange="importJSON(event)" style="font-size:13px;color:var(--text-soft);"/>
+      <div id="import-msg" style="margin-top:9px;font-size:13px;"></div>
+    </div>
+  </div>
+
+
+  <!-- FAMILY & ROLES -->
+  <div class="page" id="page-family">
+    <div><div class="ptitle">Rodzina i role</div><div class="psub">Zarządzaj członkami rodziny i ich uprawnieniami</div></div>
+
+    <!-- Single family management card -->
+    <div class="card">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Nasza rodzina</span>
+        <span style="font-size:11px;color:var(--mint-dark);font-weight:500;" id="family-admin-note"></span>
+      </div>
+      <div id="family-user-switcher" style="margin-bottom:4px;"></div>
+      <div id="family-add-member-form" style="margin-top:14px;display:none;">
+        <div class="frow">
+          <div class="fg"><label class="fl">Imię</label><input type="text" id="fam-name" placeholder="np. Anna"/></div>
+          <div class="fg"><label class="fl">Płeć</label>
+            <select id="fam-cls">
+              <option value="av-adam">👨 Mężczyzna</option>
+              <option value="av-monika">👩 Kobieta</option>
+              <option value="av-other">👧 Dziecko (dziewczynka)</option>
+              <option value="av-wspolny">👦 Dziecko (chłopiec)</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Rola i uprawnienia</label>
+          <select id="fam-role">
+            <option value="admin">👑 Administrator — pełny dostęp</option>
+            <option value="adult">✅ Dorosły — może dodawać, nie może usuwać</option>
+            <option value="child">🌱 Dziecko — tylko cele osobiste</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="btn btn-primary" onclick="famAddMember()"><i class="ti ti-plus"></i> Dodaj</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('family-add-member-form').style.display='none';">Anuluj</button>
+        </div>
+      </div>
+      <button class="btn btn-ghost" id="fam-add-btn" onclick="showFamAddForm()" style="margin-top:12px;"><i class="ti ti-plus"></i> Dodaj osobę</button>
+    </div>
+
+    <!-- Permission settings -->
+    <div class="card" id="family-perm-settings" style="display:none;">
+      <div class="card-title">Ustawienia uprawnień</div>
+      <div style="font-size:13px;color:var(--text-soft);margin-bottom:14px;">Administrator może dostosować co mogą robić inni członkowie rodziny.</div>
+      <div id="perm-settings-rows"></div>
+    </div>
+
+    <!-- Audit link -->
+    <div class="card" id="family-audit-link" style="display:none;">
+      <div class="card-title"><i class="ti ti-history" style="margin-right:6px;color:var(--text-secondary);"></i>Historia zmian</div>
+      <div style="font-size:13px;color:var(--text-soft);margin-bottom:14px;">Każda zmiana w finansach rodziny jest rejestrowana. Możesz sprawdzić kto co zmienił i kiedy.</div>
+      <button class="btn btn-ghost" onclick="go('audit')"><i class="ti ti-history"></i> Otwórz historię zmian</button>
+    </div>
+  </div>
+
+  <!-- AUDIT LOG -->
+  <div class="page" id="page-audit">
+    <div><div class="ptitle">Historia zmian</div><div class="psub">Pełny zapis wszystkich zmian w finansach rodziny</div></div>
+    <div class="card" style="padding:0;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--sand-dark);display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:14px;font-weight:600;color:var(--plum);">Ostatnie zdarzenia</div>
+        <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" onclick="if(confirm('Wyczyścić historię?')){data.auditLog=[];saveData();renderAuditLog();}"><i class="ti ti-trash"></i> Wyczyść</button>
+      </div>
+      <div id="audit-log-list" style="padding:4px 0;"></div>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+<div class="toast-wrap"><div class="toast" id="toast"></div></div>
+
+<script>
+const STORAGE_KEY='pip_family_v3';
+const MONTHS_PL=['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+const DAYS_PL=['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+const MONTHS_SHORT=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+
+const DEFAULT={
+  income:[],expenses:[],goals:[],decisions:[],calEvents:[],
+  family:[],balance:0,lastSaved:null,wiHistory:[],
+  onboardingComplete:false,_mainUserSet:false,
+  auditLog:[]
+};
+
+const DEMO={
+  income:[
+    {who:'Adam',cat:'Wynagrodzenie',amt:935,freq:'weekly',weekday:5,day:5,desc:'Pensja tygodniowa'},
+    {who:'Monika',cat:'Wynagrodzenie',amt:2100,freq:'monthly',day:5,desc:''},
+    {who:'Adam',cat:'Bonus',amt:1500,freq:'quarterly',day:25,desc:'Kwartalny'}
+  ],
+  expenses:[
+    {cat:'Mieszkanie',amt:1800,freq:'monthly',desc:'Czynsz',day:1},
+    {cat:'Samochód',amt:420,freq:'monthly',desc:'Rata + paliwo',day:15},
+    {cat:'Media',amt:140,freq:'bimonthly',desc:'Prąd i gaz',day:10},
+    {cat:'Szkoła dzieci',amt:350,freq:'monthly',desc:'Czesne',day:3},
+    {cat:'Ubezpieczenia',amt:800,freq:'annual',desc:'OC, życie',day:20},
+    {cat:'Internet / telefon',amt:90,freq:'monthly',desc:'',day:12},
+    {cat:'Subskrypcje',amt:75,freq:'monthly',desc:'Netflix, Spotify',day:8},
+    {cat:'Zajęcia dzieci',amt:105,freq:'monthly',desc:'Pływanie',day:1},
+    {cat:'Kieszonkowe',amt:20,freq:'weekly',weekday:5,desc:'',day:5}
+  ],
+  goals:[
+    {name:'Wakacje w Polsce',emoji:'🏖',target:2000,current:1200,deadline:'2026-08',monthly:400},
+    {name:'Fundusz bezpieczeństwa',emoji:'🛡',target:6000,current:5500,deadline:'2026-12',monthly:150},
+    {name:'Nowy laptop',emoji:'💻',target:1200,current:300,deadline:'2027-03',monthly:100},
+    {name:'Nowy samochód',emoji:'🚗',target:15000,current:1000,deadline:'2028-06',monthly:400}
+  ],
+  decisions:[
+    {type:'good',desc:'Domowy lunch x3',amt:12,alt:48,date:'18 cze'},
+    {type:'good',desc:'Naprawa odkurzacza',amt:30,alt:150,date:'15 cze'},
+    {type:'good',desc:'Domowa pizza',amt:15,alt:45,date:'14 cze'},
+    {type:'bad',desc:'Impulsowy zakup online',amt:89,alt:0,date:'17 cze'}
+  ],
+  calEvents:[
+    {type:'purchase',date:'2026-07-10',name:'Planowany laptop',amt:800},
+    {type:'goal',date:'2026-06-30',name:'Wpłata: Wakacje',amt:400},
+    {type:'expense',date:'2026-07-01',name:'Dodatkowe zajęcia pływania',amt:105}
+  ],
+  family:[
+    {name:'Adam',initials:'AD',cls:'av-adam',permission:'admin',role:'adult'},
+    {name:'Monika',initials:'MO',cls:'av-monika',permission:'adult',role:'adult'},
+    {name:'Zosia',initials:'ZO',cls:'av-other',permission:'child',role:'child'},
+    {name:'Jagoda',initials:'JA',cls:'av-wspolny',permission:'child',role:'child'}
+  ],
+  auditLog:[
+    {user:'Adam',action:'add_income',desc:'Dodano wynagrodzenie +3 200 €',ts:'2026-06-14T08:00:00'},
+    {user:'Monika',action:'add_goal',desc:'Dodano cel: Wakacje w Polsce',ts:'2026-06-15T10:30:00'},
+    {user:'Adam',action:'edit_expense',desc:'Czynsz: 1 200 € → 1 200 €',ts:'2026-06-16T09:15:00'},
+    {user:'Monika',action:'add_purchase',desc:'Planowany zakup: Laptop 800 €',ts:'2026-06-17T14:00:00'}
+  ],
+  balance:3240,lastSaved:null,wiHistory:[],onboardingComplete:true
+};
+
+let data;
+let currentUser=null;
+const _now=new Date();
+let calYear=_now.getFullYear(),calMonth=_now.getMonth();
+let selectedDay=null;
+
+function loadData(){
+  try{const r=localStorage.getItem(STORAGE_KEY);if(r){data=JSON.parse(r);}}catch(e){}
+  if(!data)data=JSON.parse(JSON.stringify(DEFAULT));
+  if(!data.auditLog)data.auditLog=[];
+  // Restore session user
+  try{
+    const su=sessionStorage.getItem('pip_current_user');
+    if(su){
+      currentUser=JSON.parse(su);
+    }else if(data.family&&data.family.length){
+      // Default to first family member (admin)
+      currentUser=data.family[0];
+      sessionStorage.setItem('pip_current_user',JSON.stringify(currentUser));
+    }
+  }catch(e){}
+}
+
+// ── PERMISSION ENGINE ──
+// ── PERMISSION MODEL ──
+// ADD = who can create new records
+// DELETE = who can delete (admin: any, adult: own records, child: none)
+// MANAGE = admin-only: family settings, roles, audit
+const PERMS={
+  admin:{
+    add_income:true, add_expense:true, add_goal:true, add_decision:true, add_calendar:true,
+    delete_any:true, manage_family:true, view_audit:true
+  },
+  adult:{
+    add_income:true, add_expense:true, add_goal:true, add_decision:true, add_calendar:true,
+    delete_any:false, manage_family:false, view_audit:false
+  },
+  child:{
+    add_income:false, add_expense:false, add_goal:true, add_decision:true, add_calendar:false,
+    delete_any:false, manage_family:false, view_audit:false
+  }
+};
+
+function getRole(){return currentUser?.permission||'adult';}
+function getPerm(action){
+  const role=getRole();
+  // Legacy mapping for old action names
+  const map={
+    income:'add_income', expenses:'add_expense', goals:'add_goal',
+    decisions:'add_decision', calendar:'add_calendar',
+    family:'manage_family', audit:'view_audit'
+  };
+  const key=map[action]||action;
+  return !!(PERMS[role]&&PERMS[role][key]);
+}
+
+// canAdd: can this user create a new record of this type?
+function canAdd(type, showToast=true){
+  const key='add_'+type;
+  const role=getRole();
+  const ok=!!(PERMS[role]&&PERMS[role][key]);
+  if(!ok&&showToast){
+    const name=currentUser?.name||'';
+    if(role==='child')toast('🌱 '+name+' może tylko dodawać cele i marzenia');
+    else toast('🔒 Brak uprawnień do tej operacji');
+  }
+  return ok;
+}
+
+// canDelete: admin can delete anything; adult can delete own records
+function canDelete(record, showToast=true){
+  const role=getRole();
+  if(role==='admin')return true;
+  if(role==='child'){if(showToast)toast('🌱 Dzieci nie mogą usuwać rekordów');return false;}
+  // Adult: can delete own records
+  const owner=record?.createdBy||record?.who||'';
+  const isOwn=!owner||owner===currentUser?.name;
+  if(!isOwn&&showToast)toast('🔒 Możesz usuwać tylko własne wpisy');
+  return isOwn;
+}
+
+// Legacy canEdit — maps to canAdd for write operations
+function canEdit(action, showToast=true){
+  // For family/audit management, use getPerm
+  if(action==='family'||action==='audit')return getPerm(action);
+  // For data actions, map to canAdd
+  const typeMap={income:'income',expenses:'expense',goals:'goal',decisions:'decision',calendar:'calendar'};
+  return canAdd(typeMap[action]||action, showToast);
+}
+
+function switchUser(idx){
+  const member=data.family[idx];
+  if(!member)return;
+  currentUser=member;
+  try{sessionStorage.setItem('pip_current_user',JSON.stringify(currentUser));}catch(e){}
+  renderAll();
+  renderCurrentUser();
+  // Re-populate all person selects with new default
+  populateFamilySelect('inc-who',false,currentUser.name);
+  populateFamilySelect('goal-who',true,currentUser.name);
+  populateFamilySelect('dec-who',false,currentUser.name);
+  populateFamilySelect('ev-who',false,currentUser.name);
+  populateFamilySelect('ob-inc-who',false,currentUser.name);
+  renderFamilyPage();
+  toast('Przełączono na: '+member.name);
+}
+
+function renderCurrentUser(){
+  const el=document.getElementById('current-user-display');
+  if(!el||!currentUser)return;
+  const p=currentUser.permission||'adult';
+  const label={admin:'Administrator',adult:'Dorosły',child:'Dziecko'}[p]||p;
+  const clr={admin:'var(--coral)',adult:'var(--mint-dark)',child:'var(--blue)'}[p];
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;gap:7px;cursor:pointer;" onclick="go('family')" title="Zmień użytkownika">
+      <div class="avatar ${currentUser.cls||'av-wspolny'}" style="width:26px;height:26px;font-size:10px;">${currentUser.initials||currentUser.name.slice(0,2).toUpperCase()}</div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text-dark);">${currentUser.name}</div>
+        <div style="font-size:10px;color:${clr};font-weight:500;">${label}</div>
+      </div>
+      <i class="ti ti-chevron-down" style="font-size:13px;color:var(--text-soft);"></i>
+    </div>`;
+}
+
+// ── AUDIT LOGGER ──
+function logAudit(action,desc,oldVal,newVal){
+  if(!data.auditLog)data.auditLog=[];
+  const entry={
+    user:currentUser?.name||'System',
+    action,desc,
+    ts:new Date().toISOString()
+  };
+  if(oldVal!==undefined)entry.oldVal=oldVal;
+  if(newVal!==undefined)entry.newVal=newVal;
+  data.auditLog.unshift(entry);
+  // Keep last 200 entries
+  if(data.auditLog.length>200)data.auditLog.length=200;
+}
+function isNewUser(){return !data.onboardingComplete;}
+function loadDemo(){
+  data=JSON.parse(JSON.stringify(DEMO));
+  saveData();renderAll();hideOnboarding();
+  toast('Tryb demo załadowany — możesz eksplorować!');
+}
+function saveData(){
+  data.lastSaved=new Date().toISOString();
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));updateSaveStatus();return true;}catch(e){return false;}
+}
+function manualSave(){toast(saveData()?'Zapisano ✓':'Błąd zapisu');}
+
+function exportJSON(){
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download='pip_family.json';a.click();URL.revokeObjectURL(u);
+  toast('Pobrano pip_family.json ✓');
+}
+function importJSON(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=function(ev){
+    try{
+      const p=JSON.parse(ev.target.result);
+      if(!p.income||!p.expenses||!p.goals||!p.decisions)throw new Error();
+      data=p;saveData();renderAll();
+      document.getElementById('import-msg').innerHTML='<span style="color:var(--mint-dark);font-weight:600;">Import udany ✓</span>';
+      toast('Dane wczytane ✓');
+    }catch(err){document.getElementById('import-msg').innerHTML='<span style="color:var(--red);">Błąd: nieprawidłowy plik.</span>';}
+  };
+  r.readAsText(f);
+}
+function confirmReset(){
+  if(confirm('Usunąć wszystkie dane i uruchomić kreator konfiguracji od nowa?\n\nZalecamy najpierw pobrać kopię (Dane i kopie → Pobierz).')){
+    localStorage.removeItem(STORAGE_KEY);
+    data=JSON.parse(JSON.stringify(DEFAULT));
+    showOnboarding();
+    toast('Dane usunięte');
+  }
+}
+function updateSaveStatus(){
+  const el=document.getElementById('autosave-status');if(!el)return;
+  const ts=data.lastSaved?new Date(data.lastSaved).toLocaleString('pl-PL'):'nigdy';
+  el.innerHTML=`<div class="status-pill ok"><i class="ti ti-circle-check"></i> Aktywny · ostatni zapis: ${ts}</div>`;
+}
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ─── CASHFLOW ENGINE ───
+function totalIncome(){return data.income.reduce((s,i)=>s+i.amt*freqToMonthlyFactor(i.freq||'monthly'),0);}
+function totalExpenses(){return data.expenses.reduce((s,i)=>s+i.amt*freqToMonthlyFactor(i.freq||'monthly'),0);}
+function freeMonth(){return totalIncome()-totalExpenses();}
+
+// Build all events for a given month (year,month 0-indexed)
+// ── CASHFLOW TYPE HELPERS ──
+function evIsIncome(type){return type==='income'||type==='extra_income'||type==='salary';}
+function evTypeLabel(type){
+  const labels={
+    income:'💚 Wpływ',extra_income:'💚 Dodatkowy wpływ',salary:'💰 Wynagrodzenie',
+    expense:'🔴 Planowany wydatek',bill:'🔁 Stała opłata',
+    goal:'🎯 Odkładam na marzenie',purchase:'🛒 Zakup'
+  };
+  return labels[type]||type;
+}
+function evColor(type){
+  if(evIsIncome(type))return 'var(--mint)';
+  if(type==='goal')return 'var(--blue)';
+  if(type==='purchase')return 'var(--amber)';
+  return 'var(--red)';
+}
+function evDotClass(type){
+  if(evIsIncome(type))return 'income';
+  if(type==='goal')return 'goal';
+  if(type==='purchase')return 'purchase';
+  return 'expense';
+}
+
+// ── FREQUENCY ENGINE ──
+// Returns array of {day} (1-based) when this record fires in a given month
+function getDaysInMonth(rec, y, m){
+  const freq=rec.freq||'monthly';
+  const days=[];
+  const dInMonth=daysInMonth(y,m);
+
+  if(freq==='monthly'){
+    const d=Math.min(rec.day||1,dInMonth);
+    days.push(d);
+
+  }else if(freq==='weekly'){
+    // Every occurrence of target weekday in this month
+    const targetWd=rec.weekday!=null?rec.weekday:5; // default Friday
+    for(let d=1;d<=dInMonth;d++){
+      if(new Date(y,m,d).getDay()===targetWd) days.push(d);
+    }
+
+  }else if(freq==='fortnightly'){
+    // First occurrence in month, then +14 days
+    const targetWd=rec.weekday!=null?rec.weekday:5;
+    const firstInYear=new Date(y,0,1);
+    // Find first occurrence of weekday in year
+    let startD=new Date(y,m,1);
+    while(startD.getDay()!==targetWd) startD.setDate(startD.getDate()+1);
+    // Now step through fortnightly from a fixed epoch
+    const epoch=new Date(2024,0,5); // Jan 5 2024 = Friday
+    const daysSinceEpoch=Math.floor((startD-epoch)/86400000);
+    const offset=((daysSinceEpoch%14)+14)%14;
+    // Find all fortnightly hits in month
+    for(let d=1;d<=dInMonth;d++){
+      const date=new Date(y,m,d);
+      if(date.getDay()===targetWd){
+        const diff=Math.floor((date-epoch)/86400000);
+        if(diff%14===0) days.push(d);
+      }
+    }
+
+  }else if(freq==='bimonthly'){
+    // Every 2 months — fire if month index (0-based) is even relative to start
+    // Use day field for day of month
+    if(m%2===0){
+      const d=Math.min(rec.day||1,dInMonth);
+      days.push(d);
+    }
+
+  }else if(freq==='quarterly'){
+    // Months 0,3,6,9 (Jan,Apr,Jul,Oct) — or relative to first added
+    if(m%3===0){
+      const d=Math.min(rec.day||1,dInMonth);
+      days.push(d);
+    }
+
+  }else if(freq==='annual'){
+    // Only fires in January (month 0) — simplified; real impl would store month
+    if(m===0){
+      const d=Math.min(rec.day||1,dInMonth);
+      days.push(d);
+    }
+  }
+
+  return days;
+}
+
+// Convert frequency to monthly equivalent for totalIncome/totalExpenses calculations
+function freqToMonthlyFactor(freq){
+  const factors={weekly:52/12, fortnightly:26/12, monthly:1, bimonthly:0.5, quarterly:1/3, annual:1/12};
+  return factors[freq]||1;
+}
+
+function getEventsForMonth(y,m){
+  const events=[];
+
+  // Income with frequency support
+  data.income.forEach(inc=>{
+    const days=getDaysInMonth(inc,y,m);
+    const name=inc.who+(inc.cat&&inc.cat!=='Wynagrodzenie'?' · '+inc.cat:'');
+    days.forEach(d=>{
+      events.push({type:'salary',date:dateStr(y,m,d),name,amt:inc.amt,freq:inc.freq||'monthly',recurring:true,createdBy:inc.createdBy});
+    });
+  });
+
+  // Expenses with frequency support
+  data.expenses.forEach(exp=>{
+    const days=getDaysInMonth(exp,y,m);
+    const name=exp.cat+(exp.desc?' · '+exp.desc:'');
+    days.forEach(d=>{
+      events.push({type:'bill',date:dateStr(y,m,d),name,amt:exp.amt,freq:exp.freq||'monthly',recurring:true,createdBy:exp.createdBy});
+    });
+  });
+
+  // Goal monthly contributions (always end of month)
+  data.goals.forEach(g=>{
+    if(g.monthly>0){
+      events.push({type:'goal',date:dateStr(y,m,28),name:g.name,amt:g.monthly,recurring:true});
+    }
+  });
+
+  // Calendar events (one-off + user-added recurring)
+  (data.calEvents||[]).forEach(ev=>{
+    if(ev.recurring&&ev.day){
+      events.push({...ev,date:dateStr(y,m,ev.day)});
+    }else if(ev.date){
+      events.push({...ev});
+    }
+  });
+
+  return events;
+}
+
+function dateStr(y,m,d){
+  const mm=String(m+1).padStart(2,'0');
+  const dd=String(Math.min(d,daysInMonth(y,m))).padStart(2,'0');
+  return `${y}-${mm}-${dd}`;
+}
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+
+// Build running balance for each day of month
+function buildDailyBalances(y,m,startBalance){
+  const days=daysInMonth(y,m);
+  const evts=getEventsForMonth(y,m);
+  // Step 1: collect events per day (no balance yet)
+  const daily=Array.from({length:days+1},(_,i)=>({day:i,events:[]}));
+  evts.forEach(ev=>{
+    const d=new Date(ev.date);
+    if(d.getFullYear()===y&&d.getMonth()===m){
+      const day=d.getDate();
+      if(daily[day])daily[day].events.push(ev);
+    }
+  });
+  // Step 2: compute cumulative running balance
+  let running=startBalance;
+  for(let i=1;i<=days;i++){
+    const delta=daily[i].events.reduce((s,e)=>evIsIncome(e.type)?s+e.amt:s-e.amt,0);
+    running+=delta;
+    daily[i].balance=running;
+  }
+  // Day 0 = starting balance (before any events)
+  daily[0].balance=startBalance;
+  return daily;
+}
+
+function getUpcomingEvents(limitDays=30){
+  const today=new Date();today.setHours(0,0,0,0);
+  const events=[];
+  for(let offset=0;offset<limitDays;offset++){
+    const d=new Date(today);d.setDate(d.getDate()+offset);
+    const y=d.getFullYear(),m=d.getMonth(),day=d.getDate();
+    const ds=dateStr(y,m,day);
+    const dayEvts=getEventsForMonth(y,m).filter(e=>e.date===ds);
+    dayEvts.forEach(e=>events.push({...e,dateObj:d,dayLabel:day+' '+MONTHS_SHORT[m]}));
+  }
+  return events;
+}
+
+function calcRunningFromToday(){
+  const today=new Date();today.setHours(0,0,0,0);
+  let balance=data.balance||0;
+  const upcoming=getUpcomingEvents(90);
+  const rows=[{label:'Dziś',balance,date:null}];
+  upcoming.forEach(ev=>{
+    if(evIsIncome(ev.type))balance+=ev.amt;
+    else balance-=ev.amt;
+    rows.push({label:ev.dayLabel,event:ev,balance});
+  });
+  return rows;
+}
+
+// ─── CALENDAR RENDER ───
+function renderCalendar(){
+  populateFamilySelect('ev-who',false,currentUser?.name||null);
+  const el=document.getElementById('cal-grid');
+  const hEl=document.getElementById('cal-month-title');
+  if(!el||!hEl)return;
+  hEl.textContent=MONTHS_PL[calMonth]+' '+calYear;
+
+  // Day names header
+  const gh=document.getElementById('cal-grid-header');
+  if(gh)gh.innerHTML=DAYS_PL.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const days=daysInMonth(calYear,calMonth);
+  const today=new Date();today.setHours(0,0,0,0);
+  const startBal=data.balance||0;
+  const daily=buildDailyBalances(calYear,calMonth,startBal);
+
+  let cells='';
+  // Leading blanks
+  const startOffset=(firstDay+6)%7; // Mon-first
+  for(let i=0;i<startOffset;i++){
+    const prevDays=daysInMonth(calYear,calMonth-1<0?11:calMonth-1);
+    const pd=prevDays-startOffset+i+1;
+    cells+=`<div class="cal-cell other-month"><div class="cal-date">${pd}</div></div>`;
+  }
+  for(let d=1;d<=days;d++){
+    const ds=dateStr(calYear,calMonth,d);
+    const isToday=calYear===today.getFullYear()&&calMonth===today.getMonth()&&d===today.getDate();
+    const isSel=selectedDay===d;
+    const evts=daily[d]?.events||[];
+    const bal=daily[d]?.balance??startBal;
+    const hasIncome=evts.some(e=>evIsIncome(e.type));
+    const hasExp=evts.some(e=>!evIsIncome(e.type)&&e.type!=='goal');
+    const hasGoal=evts.some(e=>e.type==='goal');
+    const hasPurchase=evts.some(e=>e.type==='purchase');
+    const balClass=bal<500?'neg':bal<1500?'warn':'pos';
+    let cls='cal-cell';
+    if(isToday)cls+=' today';
+    if(isSel)cls+=' selected';
+    if(bal<1000&&hasExp)cls+=' has-danger';
+    else if(bal<1500&&hasExp)cls+=' has-warning';
+    const dots=[]
+    if(hasIncome)dots.push('<div class="cal-dot income"></div>');
+    if(hasExp)dots.push('<div class="cal-dot expense"></div>');
+    if(hasGoal)dots.push('<div class="cal-dot goal"></div>');
+    if(hasPurchase&&!hasExp)dots.push('<div class="cal-dot purchase"></div>');
+    cells+=`<div class="${cls}" onclick="selectDay(${d})">
+      <div class="cal-date">${d}</div>
+      <div class="cal-dots">${dots.join('')}</div>
+      ${evts.length?`<div class="cal-bal ${balClass}">${Math.round(bal).toLocaleString('pl-PL')} €</div>`:''}
+    </div>`;
+  }
+  el.innerHTML=cells;
+  renderCalTimeline();
+  renderSafeWindow();
+  if(selectedDay)renderDayPanel(selectedDay);
+}
+
+function selectDay(d){
+  selectedDay=d;renderCalendar();renderDayPanel(d);
+}
+
+function renderDayPanel(d){
+  const el=document.getElementById('cal-day-panel');if(!el)return;
+  const ds=dateStr(calYear,calMonth,d);
+  const evts=getEventsForMonth(calYear,calMonth).filter(e=>e.date===ds);
+  const startBal=data.balance||0;
+  const daily=buildDailyBalances(calYear,calMonth,startBal);
+  const bal=daily[d]?.balance??startBal;
+  const balCls=bal<500?'neg':bal<1500?'warn':'pos';
+  const dateLabel=d+' '+MONTHS_PL[calMonth]+' '+calYear;
+  if(!evts.length){
+    el.innerHTML=`<div class="cal-day-panel-title">${dateLabel}</div>
+      <div class="cal-day-panel-bal ${balCls}">${Math.round(bal).toLocaleString('pl-PL')} €</div>
+      <div style="font-size:13px;color:var(--text-soft);">Brak zdarzeń tego dnia.</div>`;
+    return;
+  }
+  const rows=evts.map(e=>{
+    const cls=evIsIncome(e.type)?'income-amt':e.type==='goal'?'goal-amt':e.type==='purchase'?'purchase-amt':e.type==='bill'?'bill-amt':'expense-amt';
+    const sign=evIsIncome(e.type)?'+':'-';
+    const dotCls=evDotClass(e.type);
+    return `<div class="cal-event">
+      <div class="cal-event-dot" style="background:${evColor(e.type)}"></div>
+      <div class="cal-event-name">${e.name}</div>
+      <div class="cal-event-amt ${cls}">${sign}${e.amt.toLocaleString('pl-PL')} €</div>
+    </div>`;
+  }).join('');
+  el.innerHTML=`<div class="cal-day-panel-title">${dateLabel}</div>
+    <div class="cal-day-panel-bal ${balCls}">${Math.round(bal).toLocaleString('pl-PL')} €</div>
+    ${rows}`;
+}
+
+function renderCalTimeline(){
+  const el=document.getElementById('cal-timeline');if(!el)return;
+  const upcoming=getUpcomingEvents(45).slice(0,10);
+  if(!upcoming.length){el.innerHTML=`<div style="text-align:center;padding:20px;">
+  <div style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">Dodajcie dochody i opłaty, aby zobaczyć nadchodzące zdarzenia.</div>
+  <button class="btn btn-ghost" onclick="go('income')" style="font-size:12px;padding:7px 14px;"><i class="ti ti-cash"></i> Dodaj dochody</button>
+</div>`;return;}
+  let bal=data.balance||0;
+  el.innerHTML=upcoming.map(ev=>{
+    const isInc=evIsIncome(ev.type);
+    if(isInc)bal+=ev.amt;else bal-=ev.amt;
+    const balCls=bal<500?'neg':bal<1500?'warn':'pos';
+    const color=evColor(ev.type);
+    const sign=isInc?'+':'-';
+    return `<div class="tl-item">
+      <div class="tl-date">${ev.dayLabel}</div>
+      <div class="tl-dot" style="background:${color}"></div>
+      <div class="tl-body">
+        <div class="tl-name">${ev.name}</div>
+        <div class="tl-bal cal-bal ${balCls}">→ ${Math.round(bal).toLocaleString('pl-PL')} €</div>
+      </div>
+      <div class="tl-amt" style="color:${color}">${sign}${ev.amt.toLocaleString('pl-PL')} €</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSafeWindow(){
+  const el=document.getElementById('safe-window-panel');if(!el)return;
+  const upcoming=getUpcomingEvents(30);
+  let minBal=data.balance||0;
+  let running=minBal;
+  upcoming.forEach(ev=>{if(evIsIncome(ev.type))running+=ev.amt;else running-=ev.amt;if(running<minBal)minBal=running;});
+  const emergency=5500;
+  const safe=minBal>emergency+500;
+  const maxSpend=Math.max(0,Math.round(minBal-emergency-200));
+  if(safe){
+    el.innerHTML=`<div class="safe-window">
+      <div class="safe-window-title">🟢 Bezpieczne okno zakupów</div>
+      <div class="safe-window-body">Przez najbliższe 30 dni saldo pozostaje bezpieczne. Możecie spokojnie wydać do <strong>${maxSpend.toLocaleString('pl-PL')} €</strong> bez ryzyka dla celów i funduszu bezpieczeństwa.</div>
+    </div>`;
+  }else{
+    el.innerHTML=`<div class="safe-window" style="background:var(--amber-pale);border-left-color:var(--amber);">
+      <div class="safe-window-title" style="color:var(--amber-dark);">🟡 Uwaga na nadchodzące płatności</div>
+      <div class="safe-window-body" style="color:var(--text-mid);">W ciągu 30 dni saldo może spaść do <strong>${Math.round(minBal).toLocaleString('pl-PL')} €</strong>. Zalecamy ostrożność przy większych zakupach.</div>
+    </div>`;
+  }
+}
+
+function onEvTypeChange(){
+  const type=document.getElementById('ev-type').value;
+  const recurring=type==='salary'||type==='bill';
+  const isGoal=type==='goal';
+  document.getElementById('ev-recurring-wrap').style.display=recurring?'block':'none';
+  document.getElementById('ev-date-wrap').style.display=recurring?'none':'block';
+  document.getElementById('ev-goal-wrap').style.display=isGoal?'block':'none';
+  // Update name label and placeholder
+  const nameLabel=document.getElementById('ev-name-label');
+  const nameInput=document.getElementById('ev-name');
+  const examples=document.getElementById('ev-examples');
+  const cfg={
+    extra_income:{label:'Co to za pieniądze?',ph:'np. Zwrot podatku, Bonus, Prezent',ex:'Bonus · Zwrot podatku · Sprzedaż przedmiotu · Prezent'},
+    expense:{label:'Co planujesz?',ph:'np. Dentysta, Urodziny, Naprawa',ex:'Dentysta · Urodziny · Naprawa samochodu · Zakup sprzętu'},
+    goal:{label:'Opis (opcjonalny)',ph:'np. Odkładam na wakacje',ex:''},
+    purchase:{label:'Co chcesz kupić?',ph:'np. Laptop, Rower, Telewizor',ex:'Laptop · Rower · Telefon · Mebel'},
+    salary:{label:'Czyje wynagrodzenie?',ph:'np. Adam, Monika',ex:'Wpisz imię osoby i dzień wypłaty'},
+    bill:{label:'Nazwa opłaty',ph:'np. Czynsz, Netflix, Siłownia',ex:'Czynsz · Kredyt · Telefon · Internet · Netflix · Ubezpieczenie · Szkoła'},
+  };
+  if(cfg[type]){
+    if(nameLabel)nameLabel.textContent=cfg[type].label;
+    if(nameInput)nameInput.placeholder=cfg[type].ph;
+    if(examples)examples.textContent=cfg[type].ex;
+  }
+  // Populate goal select
+  if(isGoal){
+    const gsel=document.getElementById('ev-goal-select');
+    if(gsel){
+      gsel.innerHTML=data.goals.length
+        ?data.goals.map(g=>`<option value="${g.name}">${g.emoji||'🎯'} ${g.name}</option>`).join('')
+        :'<option>— najpierw dodaj cel —</option>';
+      // Auto-fill name
+      if(data.goals.length){
+        const g=data.goals[0];
+        if(nameInput)nameInput.value=g.name;
+      }
+    }
+  }
+}
+
+function addCalEvent(){
+  const type=document.getElementById('ev-type').value;
+  const recurring=type==='salary'||type==='bill';
+  const name=document.getElementById('ev-name').value.trim();
+  const amt=parseFloat(document.getElementById('ev-amt').value)||0;
+  let date='',day=null;
+  if(recurring){
+    day=parseInt(document.getElementById('ev-day').value)||1;
+    // Use a synthetic date for this month for display
+    const n=new Date();
+    date=dateStr(n.getFullYear(),n.getMonth(),day);
+  }else{
+    date=document.getElementById('ev-date').value;
+  }
+  if(!name||!amt){toast('Wpisz nazwę i kwotę!');return;}
+  if(!recurring&&!date){toast('Wybierz datę!');return;}
+  if(!data.calEvents)data.calEvents=[];
+  const evWho=document.getElementById('ev-who')?.value||currentUser?.name||'';
+  const ev={type,name,amt,createdBy:evWho,who:evWho};
+  if(recurring){ev.recurring=true;ev.day=day;}
+  else{ev.date=date;ev.recurring=false;}
+  data.calEvents.push(ev);
+  logAudit('add_cal_event',`Dodano zdarzenie: ${name} ${amt} €`);
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-amt').value='';
+  saveData();renderCalendar();toast('Dodano do kalendarza ✓');
+}
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}selectedDay=null;renderCalendar();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}selectedDay=null;renderCalendar();}
+function calToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();selectedDay=n.getDate();renderCalendar();}
+
+// ─── HOME ───
+function renderHomeStrip(){
+  const el=document.getElementById('home-strip');if(!el)return;
+  const ti=totalIncome(),te=totalExpenses(),free=ti-te;
+  const savings=data.decisions.filter(d=>d.type==='good'&&d.alt>0).reduce((s,d)=>s+(d.alt-d.amt),0);
+  el.innerHTML=`
+    <div><div class="strip-label">Wolne środki / mies.</div><div class="strip-val ${free>=0?'pos':'neg'}">${free.toLocaleString('pl-PL')} €</div><div class="strip-sub">po stałych opłatach</div></div>
+    <div style="cursor:pointer;" onclick="promptBalance()" title="Kliknij aby zaktualizować">
+      <div class="strip-label">Saldo konta ✏️</div>
+      <div class="strip-val">${(data.balance||0).toLocaleString('pl-PL')} €</div>
+      <div class="strip-sub">kliknij aby zaktualizować</div>
+    </div>
+    <div><div class="strip-label">Dobre decyzje · oszczędności</div><div class="strip-val pos">+${savings.toLocaleString('pl-PL')} €</div><div class="strip-sub">w tym miesiącu</div></div>`;
+}
+
+function promptBalance(){
+  const cur=data.balance||0;
+  const val=prompt('Aktualne saldo konta (EUR):',cur);
+  if(val===null)return;
+  const n=parseFloat(val);
+  if(isNaN(n)){toast('Nieprawidłowa kwota');return;}
+  data.balance=n;
+  saveData();renderHomeStrip();renderCalendar();
+  toast('Saldo zaktualizowane ✓');
+}
+
+function goalStatus(g){
+  const pct=g.target>0?g.current/g.target:0;
+  const months=monthsLeft(g.deadline);
+  if(pct>=0.9)return'safe';
+  if(pct<0.3&&months!==null&&months<6)return'risk';
+  return pct>=0.55?'safe':'warn';
+}
+function goalOutcome(g){
+  const pct=g.target>0?g.current/g.target:0;
+  const months=monthsLeft(g.deadline);
+  const remaining=g.target-g.current;
+  const monthly=g.monthly||freeMonth()*0.25;
+  if(pct>=1)return'Cel osiągnięty! 🎉';
+  if(monthly>0){
+    const needed=Math.ceil(remaining/monthly);
+    if(months!==null&&needed<=months)return`Na dobrej drodze — cel za <strong>~${needed} mies.</strong>`;
+    if(months!==null&&needed>months)return`Potrzebujesz jeszcze <strong>${needed} mies.</strong> — warto przyspieszyć`;
+  }
+  return`Pozostało <strong>${remaining.toLocaleString('pl-PL')} €</strong>`;
+}
+function monthsLeft(ym){
+  if(!ym)return null;
+  const[y,m]=ym.split('-').map(Number);
+  const n=new Date();
+  return Math.max(0,(y-n.getFullYear())*12+(m-(n.getMonth()+1)));
+}
+
+function renderGoalsGrid(){
+  const el=document.getElementById('goals-grid');if(!el)return;
+  if(!data.goals.length){el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:32px 20px;">
+  <div style="font-size:36px;margin-bottom:12px;">🎯</div>
+  <div style="font-family:'Lora',serif;font-size:16px;font-weight:600;color:var(--plum);margin-bottom:8px;">Jeszcze nie ma celów</div>
+  <div style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Dodajcie swoje pierwsze marzenie — wakacje, samochód, fundusz bezpieczeństwa.</div>
+  <button class="btn btn-primary" onclick="go('goals-edit')" style="margin:0 auto;"><i class="ti ti-plus"></i> Dodaj pierwszy cel</button>
+</div>`;return;}
+  el.innerHTML=data.goals.map(g=>{
+    const pct=Math.round(Math.min(100,g.target>0?g.current/g.target*100:0));
+    const st=goalStatus(g);
+    return `<div class="g-card ${st}">
+      <div class="g-blob"></div>
+      <span class="g-emoji">${g.emoji||'🎯'}</span>
+      <div class="g-name">${g.name}</div>
+      <div class="g-outcome">${goalOutcome(g)}</div>
+      <div class="g-track"><div class="g-fill" style="width:${pct}%;"></div></div>
+      <div class="g-footer"><span class="g-pct">${pct}% gotowe</span><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:var(--text-soft);">${g.target.toLocaleString('pl-PL')} €</span>${g.who&&g.type==='personal'?`<span style="font-size:10px;background:var(--plum-pale);color:var(--plum-light);padding:1px 6px;border-radius:100px;">${g.who}</span>`:''}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderHomeUpcoming(){
+  const el=document.getElementById('home-upcoming');if(!el)return;
+  const upcoming=getUpcomingEvents(14).slice(0,6);
+  if(!upcoming.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);">Brak nadchodzących zdarzeń.</div>';return;}
+  let bal=data.balance||0;
+  el.innerHTML=upcoming.map(ev=>{
+    const isInc=evIsIncome(ev.type);
+    if(isInc)bal+=ev.amt;else bal-=ev.amt;
+    const color=isInc?'var(--mint-dark)':ev.type==='goal'?'var(--blue)':ev.type==='purchase'?'var(--amber-dark)':'var(--red)';
+    const sign=isInc?'+':'-';
+    const emoji={salary:'💰',extra_income:'💚',income:'💚',expense:'🔴',bill:'🔁',goal:'🎯',purchase:'🛒'}[ev.type]||'📅';
+    return `<div class="lrow">
+      <div class="lrow-left">
+        <div style="font-size:18px;width:28px;">${emoji}</div>
+        <div><div class="lrow-name">${ev.name}</div><div class="lrow-sub">${ev.dayLabel}</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span style="font-size:13px;font-weight:600;color:${color}">${sign}${ev.amt.toLocaleString('pl-PL')} €</span>
+        <span style="font-size:11px;color:var(--text-soft);">→ ${Math.round(bal).toLocaleString('pl-PL')} €</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderHomeDecisions(){
+  const el=document.getElementById('home-decisions');if(!el)return;
+  const good=data.decisions.filter(d=>d.type==='good').slice(0,3);
+  if(!good.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);">Brak decyzji. Zacznij rejestrować!</div>';return;}
+  el.innerHTML=good.map(d=>{
+    const saving=d.alt>0?d.alt-d.amt:d.amt;
+    return `<div class="d-chip"><div class="d-chip-name">${d.desc}</div><div class="d-chip-date">${d.date||''}</div><div class="d-chip-saving">+${saving} €</div></div>`;
+  }).join('');
+}
+
+const ACH=[
+  {icon:'🏆',title:'Pierwszy cel dodany',check:d=>d.goals.length>=1},
+  {icon:'🌟',title:'5 dobrych decyzji',check:d=>d.decisions.filter(x=>x.type==='good').length>=5},
+  {icon:'💰',title:'Oszczędności powyżej 100 €',check:d=>d.decisions.filter(x=>x.type==='good'&&x.alt>0).reduce((s,x)=>s+(x.alt-x.amt),0)>=100},
+  {icon:'🎯',title:'Cel osiągnął 60%',check:d=>d.goals.some(g=>g.target>0&&g.current/g.target>=0.6)},
+  {icon:'📅',title:'Pierwsze zdarzenie w kalendarzu',check:d=>(d.calEvents||[]).length>=1},
+];
+function renderAchievements(){
+  const el=document.getElementById('ach-row');if(!el)return;
+  el.innerHTML=ACH.map(a=>{
+    const ok=a.check(data);
+    return `<div class="ach${ok?'':' locked'}"><div class="ach-icon">${a.icon}</div><div class="ach-title">${a.title}</div><div class="ach-date">${ok?'Odblokowane!':'Zablokowane'}</div></div>`;
+  }).join('');
+}
+
+// ─── WHAT IF ───
+function calcWI(){
+  const amt=parseFloat(document.getElementById('wi-amt').value)||0;
+  const res=document.getElementById('wi-results');
+  const narr=document.getElementById('wi-narr');
+  const bd=document.getElementById('wi-best-date');
+  if(!amt||amt<=0){res.style.display='none';narr.style.display='none';bd.style.display='none';return;}
+
+  const bal=data.balance||0;
+  const free=freeMonth();
+  const after=bal-amt;
+  const in30=after+free;
+  let risk=amt>1500||after<500?'high':amt>500?'med':'low';
+
+  // Best purchase date from cashflow
+  const upcoming=getUpcomingEvents(60);
+  let running=bal;
+  let bestDate=null;
+  for(const ev of upcoming){
+    if(evIsIncome(ev.type))running+=ev.amt;else running-=ev.amt;
+    if(running-amt>1000&&!bestDate){bestDate=ev.dayLabel;break;}
+  }
+
+  const goalVacation=data.goals.find(g=>g.name.toLowerCase().includes('wakacje'));
+  let goalMsg='Nie wpłynie na Wasze cele.';
+  if(risk==='high')goalMsg='Może opóźnić realizację celów.';
+  else if(risk==='med'&&goalVacation){
+    const delay=Math.ceil(amt/(goalVacation.monthly||300)*4);
+    goalMsg=`${goalVacation.name} może opóźnić się o ~${delay} tyg.`;
+  }
+
+  let narrative='';
+  if(risk==='low')narrative=`Ten zakup jest bezpieczny dla Waszego budżetu. Saldo pozostanie komfortowe, a wszystkie Wasze cele realizują się bez zmian.`;
+  else if(risk==='med')narrative=`Ten zakup jest możliwy, ale warto się zastanowić. Saldo po zakupie wyniesie ${after.toLocaleString('pl-PL')} €. Sprawdźcie czy nie macie nadchodzących dużych opłat.`;
+  else narrative=`Ostrożnie — ten zakup mocno nadszarpnie Wasz budżet. Saldo po zakupie spadnie do ${after.toLocaleString('pl-PL')} €. Rozważcie poczekanie na kolejną wypłatę.`;
+
+  res.style.display='grid';
+  res.innerHTML=`
+    <div class="wi-card"><div class="wi-card-label">Saldo po zakupie</div><div class="wi-card-val ${after<500?'bad':after<1500?'warn':'ok'}">${after.toLocaleString('pl-PL')} €</div></div>
+    <div class="wi-card"><div class="wi-card-label">Za 30 dni</div><div class="wi-card-val ${in30<0?'bad':in30<1000?'warn':'ok'}">${in30.toLocaleString('pl-PL')} €</div></div>
+    <div class="wi-card"><div class="wi-card-label">Wpływ na cele</div><div class="wi-card-val ${risk==='low'?'ok':risk==='med'?'warn':'bad'}">${goalMsg}</div></div>
+    <div class="wi-card"><div class="wi-card-label">Ocena</div><div class="wi-card-val ${risk==='low'?'ok':risk==='med'?'warn':'bad'}">${risk==='low'?'✓ Bezpieczny':risk==='med'?'⚠ Rozważ':'✗ Ryzykowny'}</div></div>`;
+  narr.style.display='block';narr.textContent=narrative;
+  if(bestDate&&risk!=='low'){
+    bd.style.display='block';
+    bd.innerHTML=`<span style="font-weight:600;color:#7EECD4;">Najlepszy termin zakupu:</span> po ${bestDate} — wtedy saldo będzie bezpieczne.`;
+  }else{bd.style.display='none';}
+
+  if(!data.wiHistory)data.wiHistory=[];
+  const today=new Date();
+  const ds=today.getDate()+' '+MONTHS_SHORT[today.getMonth()];
+  if(data.wiHistory[0]?.amt!==amt){
+    data.wiHistory.unshift({amt,date:ds,risk:risk==='low'?'low':risk==='med'?'med':'high'});
+    if(data.wiHistory.length>8)data.wiHistory.pop();
+    saveData();renderWIHistory();
+  }
+}
+function renderWIHistory(){
+  const el=document.getElementById('wi-history');if(!el)return;
+  const hist=data.wiHistory||[];
+  if(!hist.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);">Jeszcze nic nie sprawdzałeś/aś.</div>';return;}
+  const rc={low:'var(--mint-dark)',med:'var(--amber-dark)',high:'var(--red)'};
+  const rl={low:'bezpieczny',med:'uwaga',high:'ryzyko'};
+  el.innerHTML=hist.map(h=>`<div class="lrow">
+    <div><div class="lrow-name">${h.amt.toLocaleString('pl-PL')} €</div><div class="lrow-sub">${h.date}</div></div>
+    <span style="font-size:12px;font-weight:600;color:${rc[h.risk]}">${rl[h.risk]}</span>
+  </div>`).join('');
+}
+
+// ─── DECISIONS ───
+function renderDecisions(){
+  populateFamilySelect('dec-who',false,currentUser?.name||null);
+  const el=document.getElementById('dec-list');if(!el)return;
+  if(!data.decisions.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Brak decyzji.</div>';return;}
+  el.innerHTML=data.decisions.map((d,idx)=>{
+    const saving=d.type==='good'&&d.alt>0?d.alt-d.amt:0;
+    const good=d.type==='good';
+    return `<div class="lrow">
+      <div class="lrow-left">
+        <div class="cat-icon" style="background:${good?'var(--mint-pale)':'var(--red-pale)'};color:${good?'var(--mint-dark)':'var(--red)'};">
+          <i class="ti ${good?'ti-leaf':'ti-alert-triangle'}"></i>
+        </div>
+        <div><div class="lrow-name">${d.desc}</div><div class="lrow-sub">${good?'dobra decyzja':'nieplanowany wydatek'} · ${d.amt} €${d.alt?' · alt: '+d.alt+' €':''} · ${d.who||d.createdBy||''} · ${d.date||''}</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;">
+        <span class="lrow-amt ${good?'income-amt':'expense-amt'}">${saving>0?'+'+saving:'-'+d.amt} €</span>
+        <button class="btn-icon" onclick="removeDecision(${idx})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addDecision(){
+  const type=document.getElementById('dec-type').value;
+  const desc=document.getElementById('dec-desc').value.trim();
+  const amt=parseFloat(document.getElementById('dec-amt').value)||0;
+  const alt=parseFloat(document.getElementById('dec-alt').value)||0;
+  if(!desc||!amt){toast('Wypełnij opis i kwotę!');return;}
+  const today=new Date();
+  const date=today.getDate()+' '+MONTHS_SHORT[today.getMonth()];
+  const decWho=document.getElementById('dec-who')?.value||currentUser?.name||'';
+  data.decisions.unshift({type,desc,amt,alt,date,createdBy:decWho,who:decWho});
+  document.getElementById('dec-desc').value='';document.getElementById('dec-amt').value='';document.getElementById('dec-alt').value='';
+  logAudit('add_decision',`${type==='good'?'Dobra decyzja':'Wydatek'}: ${desc} ${amt} €`);
+  saveData();renderAll();toast(type==='good'?'Dobra decyzja zapisana! ✓':'Wydatek zapisany');
+}
+function removeDecision(idx){const rec=data.decisions[idx];if(!canDelete(rec))return;data.decisions.splice(idx,1);saveData();renderAll();toast('Usunięto');}
+
+// ─── SCORE ───
+function renderScore(){
+  const el=document.getElementById('score-wrap');if(!el)return;
+  const ti=totalIncome(),te=totalExpenses();
+  const savRate=ti>0?(ti-te)/ti:0;
+  const goalProg=data.goals.length?data.goals.reduce((s,g)=>s+(g.target>0?g.current/g.target:0),0)/data.goals.length:0;
+  const goodD=data.decisions.filter(d=>d.type==='good').length;
+  const badD=data.decisions.filter(d=>d.type==='bad').length;
+  const decScore=Math.max(0,1-(badD/(goodD+badD+0.001)));
+  const emG=data.goals.find(g=>g.name.toLowerCase().includes('bezpiecze')||g.name.toLowerCase().includes('awaryjn'));
+  const emScore=emG?Math.min(1,emG.current/emG.target):0.5;
+  const calScore=(data.calEvents||[]).length>0?1:0;
+  const total=Math.round(savRate*25+goalProg*25+decScore*20+emScore*20+calScore*10);
+  const rows=[
+    {label:'Realizacja planów',val:Math.round(goalProg*100)},
+    {label:'Poziom oszczędzania',val:Math.round(savRate*100)},
+    {label:'Dobre decyzje',val:Math.round(decScore*100)},
+    {label:'Fundusz bezpieczeństwa',val:Math.round(emScore*100)},
+    {label:'Planowanie w kalendarzu',val:calScore*100},
+  ];
+  el.innerHTML=`
+    <div style="text-align:center;min-width:106px;">
+      <svg width="106" height="106" viewBox="0 0 106 106">
+        <circle cx="53" cy="53" r="44" fill="none" stroke="var(--plum-pale)" stroke-width="8"/>
+        <circle cx="53" cy="53" r="44" fill="none" stroke="var(--coral)" stroke-width="8"
+          stroke-dasharray="${Math.round(2*Math.PI*44)}" stroke-dashoffset="${Math.round(2*Math.PI*44*(1-total/100))}"
+          stroke-linecap="round" transform="rotate(-90 53 53)"/>
+        <text x="53" y="49" text-anchor="middle" font-size="24" font-weight="600" fill="var(--plum)" font-family="Inter,sans-serif">${total}</text>
+        <text x="53" y="64" text-anchor="middle" font-size="10" fill="var(--text-soft)" font-family="Inter,sans-serif">/ 100</text>
+      </svg>
+      <div style="font-size:12px;font-weight:600;color:${total>=70?'var(--mint-dark)':total>=50?'var(--amber-dark)':'var(--red)'};">${total>=70?'Świetnie!':total>=50?'Dobrze':'Warto poprawić'}</div>
+    </div>
+    <div class="score-rows">
+      ${rows.map(r=>`<div class="score-row"><span class="score-lbl">${r.label}</span><div class="score-track"><div class="score-fill ${r.val>=70?'':r.val>=50?'warn':'bad'}" style="width:${r.val}%;"></div></div><span class="score-num">${r.val}</span></div>`).join('')}
+    </div>`;
+  const tips=document.getElementById('score-tips');if(!tips)return;
+  const tl=[];
+  if(savRate<0.2)tl.push({icon:'💡',text:'Spróbuj odkładać co najmniej 20% dochodów — nawet małe kroki robią różnicę.'});
+  if(goalProg<0.5)tl.push({icon:'🎯',text:'Wyznaczcie konkretne miesięczne wpłaty dla każdego celu — to przyspieszy realizację.'});
+  if(badD>goodD)tl.push({icon:'🌟',text:'Każda dobra decyzja się liczy — zacznijcie zapisywać codzienne małe oszczędności.'});
+  if((data.calEvents||[]).length===0)tl.push({icon:'📅',text:'Dodajcie zdarzenia do Kalendarza — będziecie wiedzieć co czeka Was w przyszłości.'});
+  if(!tl.length)tl.push({icon:'🏆',text:'Świetny wynik! Utrzymujcie to tempo.'});
+  tips.innerHTML=tl.map(t=>`<div style="display:flex;gap:11px;align-items:flex-start;padding:11px 13px;background:var(--plum-pale);border-radius:var(--r-sm);"><span style="font-size:19px;flex-shrink:0;">${t.icon}</span><span style="font-size:13px;color:var(--plum);line-height:1.5;">${t.text}</span></div>`).join('');
+}
+
+// ─── INCOME / EXPENSE / GOALS ───
+const EXP_ICONS={Mieszkanie:'ti-home',Media:'ti-bolt','Internet / telefon':'ti-wifi',Samochód:'ti-car',Paliwo:'ti-gas-station',Ubezpieczenia:'ti-shield','Szkoła dzieci':'ti-school',Subskrypcje:'ti-player-play',Inne:'ti-dots'};
+
+// ── FAMILY MEMBER SELECT HELPER ──
+// Populates any <select> with family members
+// selectId: element id, includeAll: add "Cała rodzina" option
+function populateFamilySelect(selectId, includeAll=false, defaultVal=null){
+  const sel=document.getElementById(selectId);if(!sel)return;
+  const fam=data.family||[];
+  let opts='';
+  if(includeAll) opts+='<option value="__all__">👨‍👩‍👧 Cała rodzina</option>';
+  if(fam.length){
+    opts+=fam.map(f=>{
+      const emoji=f.cls==='av-adam'?'👨':f.cls==='av-monika'?'👩':f.cls==='av-other'?'👧':'👦';
+      return `<option value="${f.name}">${emoji} ${f.name}</option>`;
+    }).join('');
+  }else{
+    opts+='<option value="">— dodaj najpierw rodzinę —</option>';
+  }
+  sel.innerHTML=opts;
+  if(defaultVal){
+    sel.value=defaultVal;
+    if(sel.value!==defaultVal) sel.value=sel.options[0]?.value||'';
+  }
+}
+
+// Legacy alias used in renderIncome
+function populateWhoSelect(){
+  // Default to currentUser if available
+  const def=currentUser?.name||null;
+  populateFamilySelect('inc-who',false,def);
+}
+
+function renderIncome(){
+  populateWhoSelect();
+  const el=document.getElementById('income-list');if(!el)return;
+  if(!data.income.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Brak dochodów.</div>';return;}
+  el.innerHTML=data.income.map((i,idx)=>{
+    const fMember=data.family.find(f=>f.name===i.who);
+    const cls=fMember?fMember.cls:'av-wspolny';
+    return `<div class="lrow">
+      <div class="lrow-left">
+        <div class="avatar ${cls}">${i.who.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div class="lrow-name">${i.who} · ${i.cat}</div>
+          <div class="lrow-sub">
+            ${FREQ_LABELS[i.freq||'monthly']} · ${i.amt.toLocaleString('pl-PL')} €
+            ${i.freq&&i.freq!=='monthly'?' (≈'+Math.round(i.amt*freqToMonthlyFactor(i.freq)).toLocaleString('pl-PL')+' €/mies.)':''}
+            · ${i.freq==='weekly'||i.freq==='fortnightly'?['Nd','Pn','Wt','Śr','Cz','Pt','Sb'][i.weekday||5]:'dzień '+( i.day||'?')}
+            ${i.createdBy&&i.createdBy!==i.who?' · '+i.createdBy:''}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;">
+        <span class="lrow-amt income-amt">${i.amt.toLocaleString('pl-PL')} €</span>
+        <button class="btn-icon" onclick="removeIncome(${idx})"><i class="ti ti-trash"></i></button>
+      </div></div>`;
+  }).join('');
+  const t=document.getElementById('inc-list-title');
+  if(t)t.textContent=`Wasze dochody · ok. ${Math.round(totalIncome()).toLocaleString('pl-PL')} €/mies.`;
+}
+function addIncome(){
+  if(!canAdd('income'))return;
+  const who=document.getElementById('inc-who').value;
+  const cat=document.getElementById('inc-cat').value;
+  const amt=parseFloat(document.getElementById('inc-amt').value)||0;
+  const freq=document.getElementById('inc-freq')?.value||'monthly';
+  const day=parseInt(document.getElementById('inc-day')?.value)||25;
+  const weekday=parseInt(document.getElementById('inc-weekday')?.value)||5;
+  const desc=document.getElementById('inc-desc')?.value.trim()||'';
+  if(!amt){toast('Wpisz kwotę!');return;}
+  data.income.push({who,cat,amt,freq,day,weekday,desc,createdBy:currentUser?.name||''});
+  logAudit('add_income',`Dodano dochód: ${who} · ${cat} ${amt} €`);
+  document.getElementById('inc-amt').value='';document.getElementById('inc-day').value='';document.getElementById('inc-desc').value='';
+  saveData();renderAll();toast('Dochód dodany ✓');
+}
+function removeIncome(idx){const rec=data.income[idx];if(!canDelete(rec))return;logAudit('remove_income',`Usunięto dochód: ${rec.who} · ${rec.cat} ${rec.amt} €`);data.income.splice(idx,1);saveData();renderAll();toast('Usunięto');}
+
+function renderExpenses(){
+  const el=document.getElementById('expense-list');if(!el)return;
+  if(!data.expenses.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Brak opłat.</div>';return;}
+  el.innerHTML=data.expenses.map((e,idx)=>`
+    <div class="lrow">
+      <div class="lrow-left">
+        <div class="cat-icon"><i class="ti ${EXP_ICONS[e.cat]||'ti-dots'}"></i></div>
+        <div>
+          <div class="lrow-name">${e.cat}${e.desc?' · '+e.desc:''}</div>
+          <div class="lrow-sub">
+            ${FREQ_LABELS[e.freq||'monthly']} · ${e.amt.toLocaleString('pl-PL')} €
+            ${e.freq&&e.freq!=='monthly'?' (≈'+Math.round(e.amt*freqToMonthlyFactor(e.freq)).toLocaleString('pl-PL')+' €/mies.)':''}
+            · dzień: ${e.day||'?'}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;">
+        <span class="lrow-amt expense-amt">-${e.amt.toLocaleString('pl-PL')} €</span>
+        <button class="btn-icon" onclick="removeExpense(${idx})"><i class="ti ti-trash"></i></button>
+      </div></div>`).join('');
+  const t=document.getElementById('exp-list-title');
+  if(t)t.textContent=`Stałe opłaty · ok. ${Math.round(totalExpenses()).toLocaleString('pl-PL')} €/mies.`;
+}
+function addExpense(){
+  if(!canAdd('expense'))return;
+  const cat=document.getElementById('exp-cat').value;
+  const amt=parseFloat(document.getElementById('exp-amt').value)||0;
+  const freq=document.getElementById('exp-freq')?.value||'monthly';
+  const day=parseInt(document.getElementById('exp-day')?.value)||1;
+  const desc=document.getElementById('exp-desc')?.value.trim()||'';
+  if(!amt){toast('Wpisz kwotę!');return;}
+  data.expenses.push({cat,amt,freq,day,desc,createdBy:currentUser?.name||''});
+  logAudit('add_expense',`Dodano opłatę: ${cat} ${amt} €`);
+  document.getElementById('exp-amt').value='';document.getElementById('exp-day').value='';document.getElementById('exp-desc').value='';
+  saveData();renderAll();toast('Opłata dodana ✓');
+}
+function removeExpense(idx){const rec=data.expenses[idx];if(!canDelete(rec))return;logAudit('remove_expense',`Usunięto opłatę: ${rec.cat} ${rec.amt} €`);data.expenses.splice(idx,1);saveData();renderAll();toast('Usunięto');}
+
+function renderGoalEditList(){
+  populateFamilySelect('goal-who',true,currentUser?.name||null);
+  const el=document.getElementById('goal-edit-list');if(!el)return;
+  if(!data.goals.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Dodajcie pierwszy cel!</div>';return;}
+  el.innerHTML=data.goals.map((g,idx)=>{
+    const pct=Math.round(Math.min(100,g.target>0?g.current/g.target*100:0));
+    return `<div class="lrow">
+      <div class="lrow-left">
+        <div class="cat-icon" style="font-size:20px;background:var(--plum-pale);">${g.emoji||'🎯'}</div>
+        <div><div class="lrow-name">${g.name}</div><div class="lrow-sub">${g.current.toLocaleString('pl-PL')} € / ${g.target.toLocaleString('pl-PL')} € · ${pct}% · ${g.monthly||0} €/mies.</div></div>
+      </div>
+      <button class="btn-icon" onclick="removeGoal(${idx})"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+function addGoal(){
+  if(!canAdd('goal'))return;
+  const name=document.getElementById('goal-name').value.trim();
+  const emoji=document.getElementById('goal-emoji').value.trim()||'🎯';
+  const target=parseFloat(document.getElementById('goal-target').value)||0;
+  const current=parseFloat(document.getElementById('goal-current').value)||0;
+  const deadline=document.getElementById('goal-deadline').value;
+  const monthly=parseFloat(document.getElementById('goal-monthly').value)||0;
+  const goalWho=document.getElementById('goal-who')?.value||currentUser?.name||'';
+  const goalType=document.getElementById('goal-type')?.value||'family';
+  if(!name||!target){toast('Podaj nazwę i kwotę celu!');return;}
+  data.goals.push({name,emoji,target,current,deadline,monthly,createdBy:currentUser?.name||'',who:goalWho,type:goalType});
+  logAudit('add_goal',`Dodano cel: ${emoji} ${name} (${target} €)`);
+  ['goal-name','goal-emoji','goal-target','goal-current','goal-deadline','goal-monthly'].forEach(id=>{document.getElementById(id).value='';});
+  saveData();renderAll();toast('Cel dodany ✓');
+}
+function removeGoal(idx){const rec=data.goals[idx];if(!canDelete(rec))return;logAudit('remove_goal',`Usunięto cel: ${rec.emoji||''} ${rec.name}`);data.goals.splice(idx,1);saveData();renderAll();toast('Usunięto');}
+
+function renderFamilyAvatars(){
+  const el=document.getElementById('fav-row');if(!el)return;
+  const fam=data.family||[];
+  el.innerHTML=fam.map(m=>`<div class="fav ${m.cls||'av-other'}">${m.initials}<div class="fav-tip">${m.name}</div></div>`).join('');
+}
+
+function renderGreeting(){
+  const fam=data.family||[];
+  const titleEl=document.getElementById('top-title');
+  const eyebrowEl=document.getElementById('top-eyebrow');
+  const subEl=document.getElementById('top-sub');
+
+  // Date
+  const now=new Date();
+  const days=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+  const months=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+  const dateStr=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()];
+  if(eyebrowEl)eyebrowEl.textContent=dateStr;
+
+  // Greeting — personalised
+  const hour=now.getHours();
+  const timeGreet=hour<12?'Dzień dobry':hour<18?'Dzień dobry':'Dobry wieczór';
+  const adults=fam.filter(f=>f.cls==='av-adam'||f.cls==='av-monika'||f.role==='adult');
+  let nameStr='';
+  if(adults.length===0&&fam.length>0){
+    nameStr=fam[0].name;
+  }else if(adults.length===1){
+    nameStr=adults[0].name;
+  }else if(adults.length===2){
+    nameStr=adults[0].name+' i '+adults[1].name;
+  }else if(adults.length>2){
+    nameStr=adults[0].name+' i rodzina';
+  }
+  if(titleEl){
+    titleEl.textContent=nameStr
+      ? timeGreet+', '+nameStr+'!'
+      : titleEl.textContent=timeGreet+'!';
+  }
+  if(subEl){
+    if(data.goals&&data.goals.length>0){
+      subEl.textContent='Sprawdź jak idzie realizacja Waszych marzeń.';
+    }else if(fam.length>0){
+      subEl.textContent='Zacznijcie od dodania pierwszego celu rodzinnego.';
+    }else{
+      subEl.textContent='Skonfigurujcie Wasz plan rodzinny.';
+    }
+  }
+}
+
+// ─── NAVIGATION ───
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const pg=document.getElementById('page-'+id);
+  if(!pg){console.warn('Page not found:',id);return;}
+  pg.classList.add('on');
+  document.querySelectorAll('.s-nav').forEach(n=>n.classList.toggle('active',!!n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")));
+  if(id==='calendar'){if(selectedDay===null){const _t=new Date();if(_t.getFullYear()===calYear&&_t.getMonth()===calMonth)selectedDay=_t.getDate();}renderCalendar();}
+  if(id==='dataio')updateSaveStatus();
+  if(id==='family')renderFamilyPage();
+  if(id==='audit'){renderAuditLog();if(!getPerm('audit')){toast('🔒 Tylko administrator może przeglądać historię');go('home');return;}}
+  // sync bottom nav
+  const mainNav=['home','calendar','whatif','decisions'];
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  const bnId='bn-'+(mainNav.includes(id)?id:'menu');
+  const bnEl=document.getElementById(bnId);
+  if(bnEl)bnEl.classList.add('active');
+  // close mobile menu if open
+  const mobOv=document.getElementById('mob-menu-overlay');
+  if(mobOv)mobOv.classList.remove('open');
+}
+
+function renderAll(){
+  renderFamilyAvatars();
+  renderGreeting();
+  renderCurrentUser();
+  renderHomeStrip();
+  renderGoalsGrid();
+  renderHomeUpcoming();
+  renderHomeDecisions();
+  renderAchievements();
+  renderDecisions();
+  renderScore();
+  renderIncome();
+  renderExpenses();
+  renderGoalEditList();
+  renderWIHistory();
+  updateSaveStatus();
+  // Show/hide audit nav based on permission
+  const auditNav=document.getElementById('nav-audit');
+  if(auditNav)auditNav.style.display=getPerm('audit')?'':'none';
+}
+
+// Init
+loadData();
+if(isNewUser()){
+  showOnboarding();
+}else{
+  // Ensure currentUser is set
+  if(!currentUser&&data.family&&data.family.length){
+    currentUser=data.family[0];
+  }
+  renderAll();
+}
+// Set today's date default in event form
+const todayStr=new Date().toISOString().split('T')[0];
+const evDateEl=document.getElementById('ev-date');
+if(evDateEl)evDateEl.value=todayStr;
+initFreqHints();
+</script>
+
+<!-- ── ONBOARDING OVERLAY ── -->
+<div class="ob-overlay" id="ob-overlay" style="display:none;">
+  <div class="ob-wrap" id="ob-wrap">
+
+    <!-- Screen 0: Welcome -->
+    <div id="ob-s0" class="ob-welcome">
+      <div class="ob-welcome-icon">❤️</div>
+      <div class="ob-welcome-title">Witaj w PIP Family</div>
+      <div class="ob-welcome-sub">Stwórzmy razem plan finansowy Waszej rodziny. To zajmie tylko kilka minut i pomoże Wam osiągać Wasze marzenia.</div>
+      <div class="ob-actions">
+        <button class="ob-btn-main" onclick="obGo(1)"><i class="ti ti-arrow-right"></i> Zaczynamy!</button>
+        <button class="ob-btn-demo" onclick="loadDemo()">lub wczytaj przykładową rodzinę (tryb demo)</button>
+      </div>
+    </div>
+
+    <!-- Screen 1: Family members -->
+    <div id="ob-s1" class="ob-step" style="display:none;">
+      <div class="ob-step-header">
+        <div class="ob-progress" id="ob-prog"></div>
+        <div class="ob-step-eyebrow">Krok 1 z 4</div>
+        <div class="ob-step-title">Jak masz na imię?</div>
+        <div class="ob-step-sub">PIP Family będzie Cię witać po imieniu i personalizować plany dla Waszej rodziny.</div>
+      </div>
+      <div class="ob-card" style="margin-bottom:16px;">
+        <label class="fl">Twoje imię</label>
+        <input type="text" id="ob-main-name" placeholder="np. Anna, Marek, Sarah..." style="font-size:18px;font-weight:500;"
+          onkeydown="if(event.key==='Enter')obAddMainUser()"/>
+        <div style="margin-top:10px;">
+          <select id="ob-main-role" style="max-width:200px;">
+            <option value="av-adam">👨 Mężczyzna</option>
+            <option value="av-monika">👩 Kobieta</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="obAddMainUser()" style="margin-top:12px;width:100%;justify-content:center;">
+          <i class="ti ti-check"></i> To jestem ja
+        </button>
+      </div>
+      <div class="ob-card">
+        <div style="font-size:13px;font-weight:600;color:var(--plum);margin-bottom:12px;">Pozostali członkowie rodziny <span style="font-size:11px;font-weight:400;color:var(--text-soft);">(opcjonalnie)</span></div>
+        <div class="ob-member-chips" id="ob-member-chips"></div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="ob-member-name" placeholder="Imię partnera, dziecka..." style="flex:1;" onkeydown="if(event.key==='Enter')obAddMember()"/>
+          <select id="ob-member-role" style="max-width:130px;">
+            <option value="av-monika">👩 Kobieta</option>
+            <option value="av-adam">👨 Mężczyzna</option>
+            <option value="av-other">👧 Dziecko</option>
+            <option value="av-wspolny">👦 Dziecko</option>
+          </select>
+          <button class="btn btn-primary" onclick="obAddMember()" style="padding:9px 14px;"><i class="ti ti-plus"></i></button>
+        </div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-skip" onclick="obGo(2)" style="font-size:11px;">pomiń wszystko</button>
+        <button class="ob-btn-next" onclick="obValidateStep1()">Dalej <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- Screen 2: Income -->
+    <div id="ob-s2" class="ob-step" style="display:none;">
+      <div class="ob-step-header">
+        <div class="ob-progress" id="ob-prog2"></div>
+        <div class="ob-step-eyebrow">Krok 2 z 4</div>
+        <div class="ob-step-title">Jakie pieniądze wpływają do Waszego domu?</div>
+        <div class="ob-step-sub">Dodajcie wszystkie miesięczne źródła dochodu — wynagrodzenia, becikowe, dodatkowe przychody.</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-added-list" id="ob-income-list"></div>
+        <div class="frow" style="margin-bottom:10px;">
+          <div class="fg"><label class="fl">Osoba</label><select id="ob-inc-who"></select></div>
+          <div class="fg"><label class="fl">Rodzaj</label><select id="ob-inc-cat"><option>Wynagrodzenie</option><option>Bonus</option><option>Zasiłek</option><option>Dodatkowy dochód</option><option>Inne</option></select></div>
+        </div>
+        <div class="frow" style="margin-bottom:10px;">
+          <div class="fg"><label class="fl">Kwota miesięcznie (EUR)</label><input type="number" id="ob-inc-amt" placeholder="np. 3200" min="0"/></div>
+          <div class="fg"><label class="fl">Dzień wypłaty</label><input type="number" id="ob-inc-day" placeholder="np. 25" min="1" max="31"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="obAddIncome()"><i class="ti ti-plus"></i> Dodaj dochód</button>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn-back" onclick="obGo(1)"><i class="ti ti-arrow-left"></i> Wstecz</button>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="ob-skip" onclick="obGo(3)">pomiń</button>
+          <button class="ob-btn-next" onclick="obGo(3)">Dalej <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Expenses -->
+    <div id="ob-s3" class="ob-step" style="display:none;">
+      <div class="ob-step-header">
+        <div class="ob-progress" id="ob-prog3"></div>
+        <div class="ob-step-eyebrow">Krok 3 z 4</div>
+        <div class="ob-step-title">Jakie stałe opłaty płacicie co miesiąc?</div>
+        <div class="ob-step-sub">Czynsz, szkoła, ubezpieczenia — wszystko co wychodzi regularnie. PIP pomoże Wam przewidzieć kiedy.</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-added-list" id="ob-expense-list"></div>
+        <div class="frow" style="margin-bottom:10px;">
+          <div class="fg"><label class="fl">Kategoria</label>
+            <select id="ob-exp-cat">
+              <option>Mieszkanie</option><option>Media</option><option>Internet / telefon</option>
+              <option>Samochód</option><option>Paliwo</option><option>Ubezpieczenia</option>
+              <option>Szkoła dzieci</option><option>Zajęcia dzieci</option><option>Subskrypcje</option><option>Inne</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Dzień miesiąca</label><input type="number" id="ob-exp-day" placeholder="np. 1" min="1" max="31"/></div>
+        </div>
+        <div class="frow" style="margin-bottom:10px;">
+          <div class="fg"><label class="fl">Kwota miesięcznie (EUR)</label><input type="number" id="ob-exp-amt" placeholder="np. 1200" min="0"/></div>
+          <div class="fg"><label class="fl">Opis (opcjonalny)</label><input type="text" id="ob-exp-desc" placeholder="np. czynsz"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="obAddExpense()"><i class="ti ti-plus"></i> Dodaj opłatę</button>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn-back" onclick="obGo(2)"><i class="ti ti-arrow-left"></i> Wstecz</button>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="ob-skip" onclick="obGo(4)">pomiń</button>
+          <button class="ob-btn-next" onclick="obGo(4)">Dalej <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 4: Goals -->
+    <div id="ob-s4" class="ob-step" style="display:none;">
+      <div class="ob-step-header">
+        <div class="ob-progress" id="ob-prog4"></div>
+        <div class="ob-step-eyebrow">Krok 4 z 4</div>
+        <div class="ob-step-title">Na co oszczędzacie?</div>
+        <div class="ob-step-sub">Dodajcie marzenia Waszej rodziny — wakacje, samochód, nowy sprzęt, fundusz bezpieczeństwa. PIP będzie śledzić postęp.</div>
+      </div>
+      <div class="ob-goal-suggestions" id="ob-goal-sug">
+        <div class="ob-goal-sug" onclick="obPickGoalSug(this,'Wakacje','🏖')">🏖 Wakacje</div>
+        <div class="ob-goal-sug" onclick="obPickGoalSug(this,'Fundusz bezpieczeństwa','🛡')">🛡 Fundusz bezpieczeństwa</div>
+        <div class="ob-goal-sug" onclick="obPickGoalSug(this,'Nowy samochód','🚗')">🚗 Nowy samochód</div>
+        <div class="ob-goal-sug" onclick="obPickGoalSug(this,'Remont domu','🏡')">🏡 Remont domu</div>
+        <div class="ob-goal-sug" onclick="obPickGoalSug(this,'Nowy laptop','💻')">💻 Nowy laptop</div>
+        <div class="ob-goal-sug" onclick="obPickGoalSug(this,'Edukacja dzieci','🎓')">🎓 Edukacja dzieci</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-added-list" id="ob-goal-list"></div>
+        <div class="frow" style="margin-bottom:10px;">
+          <div class="fg"><label class="fl">Marzenie</label><input type="text" id="ob-goal-name" placeholder="np. Wakacje w Grecji"/></div>
+          <div class="fg"><label class="fl">Emoji</label><input type="text" id="ob-goal-emoji" placeholder="🏖" maxlength="4"/></div>
+        </div>
+        <div class="frow" style="margin-bottom:10px;">
+          <div class="fg"><label class="fl">Ile potrzebujecie? (EUR)</label><input type="number" id="ob-goal-target" placeholder="np. 3000" min="0"/></div>
+          <div class="fg"><label class="fl">Miesięczna wpłata (EUR)</label><input type="number" id="ob-goal-monthly" placeholder="np. 300" min="0"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="obAddGoal()"><i class="ti ti-plus"></i> Dodaj cel</button>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn-back" onclick="obGo(3)"><i class="ti ti-arrow-left"></i> Wstecz</button>
+        <button class="ob-btn-next" onclick="obFinish()" style="background:var(--coral);"><i class="ti ti-check"></i> Gotowe!</button>
+      </div>
+    </div>
+
+    <!-- Screen 5: Complete -->
+    <div id="ob-s5" class="ob-step" style="display:none;text-align:center;">
+      <div class="ob-complete">
+        <div class="ob-complete-icon">🎉</div>
+        <div class="ob-complete-title" id="ob-complete-title">Plan rodzinny gotowy!</div>
+        <div class="ob-complete-sub">PIP Family może teraz przewidywać Waszą finansową przyszłość i pomagać osiągać marzenia.</div>
+        <div class="ob-summary" id="ob-summary"></div>
+        <button class="ob-btn-main" onclick="hideOnboarding()" style="margin:0 auto;">
+          <i class="ti ti-home"></i> Przejdź do swojego planu
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── ONBOARDING ENGINE ──
+const OB_STEPS=4;
+
+function showOnboarding(){
+  document.getElementById('ob-overlay').style.display='flex';
+}
+function hideOnboarding(){
+  document.getElementById('ob-overlay').style.display='none';
+  renderAll();
+}
+
+function obProgress(step){
+  ['','2','3','4'].forEach((sfx,idx)=>{
+    const el=document.getElementById('ob-prog'+sfx);
+    if(el)el.innerHTML=Array.from({length:OB_STEPS},(_,j)=>`<div class="ob-prog-dot ${j+1<step?'done':j+1===step?'active':''}"></div>`).join('');
+  });
+}
+
+function obGo(step){
+  for(let i=0;i<=5;i++){const el=document.getElementById('ob-s'+i);if(el)el.style.display=i===step?'':'none';}
+  obProgress(step);
+  if(step===1){
+    obRenderMembers();
+    // Pre-fill main user name if already set
+    const ni=document.getElementById('ob-main-name');
+    if(ni&&data._mainUserSet&&data.family[0]){
+      ni.value=data.family[0].name;
+      const roleEl=document.getElementById('ob-main-role');
+      if(roleEl)roleEl.value=data.family[0].cls||'av-adam';
+    }
+  }
+  if(step===2){obRenderIncomeList();obPopulateWhoSelect();}
+  if(step===3)obRenderExpenseList();
+  if(step===4)obRenderGoalList();
+  const ov=document.getElementById('ob-overlay');
+  if(ov)ov.scrollTop=0;
+}
+
+function obRenderMembers(){
+  const el=document.getElementById('ob-member-chips');if(!el)return;
+  // Show all family members EXCEPT the main user (index 0 if set)
+  const extra=data.family.slice(data._mainUserSet?1:0);
+  el.innerHTML=extra.length
+    ?extra.map((m,i)=>{
+      const realIdx=data._mainUserSet?i+1:i;
+      return `<div class="ob-member-chip">${m.name}<button onclick="obRemoveMember(${realIdx})">×</button></div>`;
+    }).join('')
+    :'<div class="ob-empty-hint">Możesz dodać partnera lub dzieci.</div>';
+}
+
+function obAddMainUser(){
+  const ni=document.getElementById('ob-main-name');
+  const name=ni.value.trim();
+  if(!name){ni.focus();ni.style.borderColor='var(--coral)';return;}
+  ni.style.borderColor='';
+  const role=document.getElementById('ob-main-role').value;
+  const initials=name.slice(0,2).toUpperCase();
+  // Replace or insert main user at position 0
+  if(data._mainUserSet){
+    data.family[0]={name,initials,cls:role,role:'adult',permission:'admin'};
+    currentUser=data.family[0];
+  }else{
+    // Main user (first added) is always admin
+  data.family.unshift({name,initials,cls:role,role:'adult',permission:'admin'});
+  currentUser=data.family[0];
+  try{sessionStorage.setItem('pip_current_user',JSON.stringify(currentUser));}catch(e){}
+    data._mainUserSet=true;
+  }
+  saveData();
+  // Show confirmation
+  ni.style.borderColor='var(--mint)';
+  const btn=ni.nextElementSibling?.nextElementSibling;
+  // Update greeting preview
+  renderGreeting();
+  obRenderMembers();
+}
+
+function obAddMember(){
+  const ni=document.getElementById('ob-member-name');
+  const name=ni.value.trim();if(!name)return;
+  const cls=document.getElementById('ob-member-role').value;
+  const isChild=cls==='av-other'||cls==='av-wspolny';
+  data.family.push({name,initials:name.slice(0,2).toUpperCase(),cls,role:isChild?'child':'adult',permission:isChild?'child':'adult'});
+  ni.value='';saveData();obRenderMembers();obPopulateWhoSelect();
+}
+function obRemoveMember(i){
+  // Don't allow removing main user via this path
+  if(i===0&&data._mainUserSet)return;
+  data.family.splice(i,1);saveData();obRenderMembers();obPopulateWhoSelect();
+}
+function obPopulateWhoSelect(){
+  populateFamilySelect('ob-inc-who',false,currentUser?.name||null);
+}
+
+function obRenderIncomeList(){
+  const el=document.getElementById('ob-income-list');if(!el)return;
+  el.innerHTML=data.income.length
+    ?data.income.map((inc,i)=>`<div class="ob-added-item"><div><div class="ob-added-name">${inc.who} · ${inc.cat}</div><div class="ob-added-sub">${inc.amt.toLocaleString('pl-PL')} € · dzień ${inc.day||'?'}</div></div><button class="ob-added-remove" onclick="obRemoveIncome(${i})"><i class="ti ti-trash"></i></button></div>`).join('')
+    :'<div class="ob-empty-hint">Brak dochodów — dodaj pierwszy powyżej.</div>';
+}
+function obAddIncome(){
+  const who=document.getElementById('ob-inc-who')?.value||'';
+  const cat=document.getElementById('ob-inc-cat').value;
+  const amt=parseFloat(document.getElementById('ob-inc-amt').value)||0;
+  const day=parseInt(document.getElementById('ob-inc-day').value)||25;
+  if(!amt){toast('Wpisz kwotę!');return;}
+  data.income.push({who,cat,amt,day,desc:''});
+  document.getElementById('ob-inc-amt').value='';document.getElementById('ob-inc-day').value='';
+  saveData();obRenderIncomeList();
+}
+function obRemoveIncome(i){data.income.splice(i,1);saveData();obRenderIncomeList();}
+
+function obRenderExpenseList(){
+  const el=document.getElementById('ob-expense-list');if(!el)return;
+  el.innerHTML=data.expenses.length
+    ?data.expenses.map((e,i)=>`<div class="ob-added-item"><div><div class="ob-added-name">${e.cat}${e.desc?' · '+e.desc:''}</div><div class="ob-added-sub">${e.amt.toLocaleString('pl-PL')} € · dzień ${e.day||'?'}</div></div><button class="ob-added-remove" onclick="obRemoveExpense(${i})"><i class="ti ti-trash"></i></button></div>`).join('')
+    :'<div class="ob-empty-hint">Brak opłat — dodaj pierwszą powyżej.</div>';
+}
+function obAddExpense(){
+  const cat=document.getElementById('ob-exp-cat').value;
+  const amt=parseFloat(document.getElementById('ob-exp-amt').value)||0;
+  const day=parseInt(document.getElementById('ob-exp-day').value)||1;
+  const desc=document.getElementById('ob-exp-desc').value.trim();
+  if(!amt){toast('Wpisz kwotę!');return;}
+  data.expenses.push({cat,amt,day,desc});
+  document.getElementById('ob-exp-amt').value='';document.getElementById('ob-exp-day').value='';document.getElementById('ob-exp-desc').value='';
+  saveData();obRenderExpenseList();
+}
+function obRemoveExpense(i){data.expenses.splice(i,1);saveData();obRenderExpenseList();}
+
+function obRenderGoalList(){
+  const el=document.getElementById('ob-goal-list');if(!el)return;
+  el.innerHTML=data.goals.length
+    ?data.goals.map((g,i)=>`<div class="ob-added-item"><div><div class="ob-added-name">${g.emoji||'🎯'} ${g.name}</div><div class="ob-added-sub">${g.target.toLocaleString('pl-PL')} € · ${g.monthly||0} €/mies.</div></div><button class="ob-added-remove" onclick="obRemoveGoal(${i})"><i class="ti ti-trash"></i></button></div>`).join('')
+    :'<div class="ob-empty-hint">Wybierz z sugestii lub dodaj własny cel.</div>';
+}
+function obPickGoalSug(el,name,emoji){
+  document.getElementById('ob-goal-name').value=name;
+  document.getElementById('ob-goal-emoji').value=emoji;
+  document.querySelectorAll('.ob-goal-sug').forEach(e=>e.classList.remove('picked'));
+  el.classList.add('picked');
+}
+function obAddGoal(){
+  const name=document.getElementById('ob-goal-name').value.trim();
+  const emoji=document.getElementById('ob-goal-emoji').value.trim()||'🎯';
+  const target=parseFloat(document.getElementById('ob-goal-target').value)||0;
+  const monthly=parseFloat(document.getElementById('ob-goal-monthly').value)||0;
+  if(!name||!target){toast('Podaj nazwę i kwotę celu!');return;}
+  data.goals.push({name,emoji,target,current:0,deadline:'',monthly});
+  document.getElementById('ob-goal-name').value='';document.getElementById('ob-goal-emoji').value='';
+  document.getElementById('ob-goal-target').value='';document.getElementById('ob-goal-monthly').value='';
+  document.querySelectorAll('.ob-goal-sug').forEach(e=>e.classList.remove('picked'));
+  saveData();obRenderGoalList();
+}
+function obRemoveGoal(i){data.goals.splice(i,1);saveData();obRenderGoalList();}
+
+function obValidateStep1(){
+  // If main name field has text but not yet added, add it automatically
+  const ni=document.getElementById('ob-main-name');
+  if(ni&&ni.value.trim()&&!data._mainUserSet){
+    obAddMainUser();
+  }
+  obGo(2);
+}
+
+function obFinish(){
+  data.onboardingComplete=true;saveData();
+  const ti=totalIncome(),te=totalExpenses();
+  const mainName=data.family[0]?.name||'';
+  const s=document.getElementById('ob-summary');
+  if(s)s.innerHTML=`
+    <div class="ob-summary-row"><span class="ob-summary-label">Twoje imię</span><span class="ob-summary-val">${mainName||'—'}</span></div>
+    <div class="ob-summary-row"><span class="ob-summary-label">Członkowie rodziny</span><span class="ob-summary-val">${data.family.length||'—'}</span></div>
+    <div class="ob-summary-row"><span class="ob-summary-label">Miesięczne dochody</span><span class="ob-summary-val">${ti.toLocaleString('pl-PL')} €</span></div>
+    <div class="ob-summary-row"><span class="ob-summary-label">Stałe opłaty</span><span class="ob-summary-val">${te.toLocaleString('pl-PL')} €</span></div>
+    <div class="ob-summary-row"><span class="ob-summary-label">Wolne środki / mies.</span><span class="ob-summary-val" style="color:var(--mint-dark);">${(ti-te).toLocaleString('pl-PL')} €</span></div>
+    <div class="ob-summary-row"><span class="ob-summary-label">Cele finansowe</span><span class="ob-summary-val">${data.goals.length}</span></div>`;
+  obGo(5);
+}
+</script>
+
+
+<!-- ── BOTTOM NAV (mobile only) ── -->
+<nav class="bottom-nav" role="navigation" aria-label="Nawigacja główna">
+  <button class="bn-item active" id="bn-home" onclick="go('home');bnActive('home')">
+    <i class="ti ti-home" aria-hidden="true"></i>Cele
+  </button>
+  <button class="bn-item" id="bn-calendar" onclick="go('calendar');bnActive('calendar')">
+    <i class="ti ti-calendar-event" aria-hidden="true"></i>Kalendarz
+  </button>
+  <button class="bn-item" id="bn-whatif" onclick="go('whatif');bnActive('whatif')">
+    <i class="ti ti-sparkles" aria-hidden="true"></i>Co jeśli?
+  </button>
+  <button class="bn-item" id="bn-decisions" onclick="go('decisions');bnActive('decisions')">
+    <i class="ti ti-star" aria-hidden="true"></i>Decyzje
+  </button>
+  <button class="bn-item" id="bn-menu" onclick="openMobMenu()">
+    <i class="ti ti-menu-2" aria-hidden="true"></i>Więcej
+  </button>
+</nav>
+
+<!-- ── MOBILE SLIDE-OUT MENU ── -->
+<div class="mob-menu-overlay" id="mob-menu-overlay" onclick="closeMobMenuOverlay(event)">
+  <div class="mob-menu-panel">
+    <button class="mob-menu-close" onclick="closeMobMenuBtn()" aria-label="Zamknij menu">
+      <i class="ti ti-x" aria-hidden="true"></i>
+    </button>
+    <div style="padding:0 22px 20px;display:flex;align-items:center;gap:10px;">
+      <div style="width:34px;height:34px;border-radius:9px;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:17px;">❤️</div>
+      <div style="font-family:'Lora',serif;font-size:16px;color:#fff;font-weight:600;">PIP Family</div>
+    </div>
+    <span class="mob-s-sec">Ustawienia</span>
+    <div class="mob-s-nav" onclick="go('income')"><i class="ti ti-cash"></i> Dochody</div>
+    <div class="mob-s-nav" onclick="go('expenses')"><i class="ti ti-tag"></i> Stałe opłaty</div>
+    <div class="mob-s-nav" onclick="go('goals-edit')"><i class="ti ti-target"></i> Zarządzaj celami</div>
+    <div class="mob-s-nav" onclick="go('score')"><i class="ti ti-award"></i> Wynik rodziny</div>
+    <div class="mob-s-nav" onclick="go('family')"><i class="ti ti-users"></i> Rodzina i role</div>
+    <div class="mob-s-nav" onclick="go('dataio')"><i class="ti ti-cloud"></i> Dane i kopie</div>
+    <div style="margin-top:auto;padding:24px 22px 0;border-top:1px solid rgba(255,255,255,.1);">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:8px;">Nasza rodzina</div>
+      <div class="fav-row" id="mob-fav-row"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+// ── CALENDAR EVENT MANAGEMENT ──
+function renderCalEventList(){
+  const tlEl=document.getElementById('cal-timeline');
+  const listEl=document.getElementById('cal-event-list');
+  if(!tlEl||!listEl)return;
+  const showing=listEl.style.display==='none';
+  tlEl.style.display=showing?'none':'';
+  listEl.style.display=showing?'':'none';
+  if(!showing)return;
+  const evs=data.calEvents||[];
+  if(!evs.length){
+    listEl.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Brak dodanych zdarzeń.</div>';
+    return;
+  }
+  const typeEmoji={extra_income:'💚',salary:'💰',expense:'🔴',bill:'🔁',goal:'🎯',purchase:'🛒',income:'💚'};
+  listEl.innerHTML=evs.map((ev,i)=>{
+    const em=typeEmoji[ev.type]||'📅';
+    const when=ev.recurring?'co miesiąc, dzień '+ev.day:(ev.date||'—');
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--sand-dark);font-size:13px;">
+      <div>
+        <div style="font-weight:600;">${em} ${ev.name}</div>
+        <div style="font-size:11px;color:var(--text-soft);">${when} · ${ev.amt.toLocaleString('pl-PL')} €</div>
+      </div>
+      <button class="btn-icon" onclick="removeCalEvent(${i});renderCalEventList();" title="Usuń"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+  listEl.innerHTML+='<button class="btn btn-ghost" style="margin-top:10px;font-size:12px;width:100%;justify-content:center;" onclick="document.getElementById('cal-event-list').style.display='none';document.getElementById('cal-timeline').style.display='';">← Wróć do listy</button>';
+}
+
+function removeCalEvent(idx){
+  if(!data.calEvents)return;
+  const rec=data.calEvents[idx];
+  if(!canDelete(rec))return;
+  data.calEvents.splice(idx,1);
+  saveData();renderCalendar();toast('Zdarzenie usunięte');
+}
+
+
+// ── FAMILY PAGE ──
+function renderFamilyPage(){
+  const isAdmin=getPerm('family');
+  const adminNote=document.getElementById('family-admin-note');
+  if(adminNote)adminNote.textContent=isAdmin?'Jesteś administratorem':'Tylko administrator może zarządzać rolami';
+  const permSettings=document.getElementById('family-perm-settings');
+  if(permSettings)permSettings.style.display=isAdmin?'':'none';
+  const auditLink=document.getElementById('family-audit-link');
+  if(auditLink)auditLink.style.display=getPerm('audit')?'':'none';
+  const famAddBtn=document.getElementById('fam-add-btn');
+  if(famAddBtn)famAddBtn.style.display=isAdmin?'':'none';
+  const auditNav=document.getElementById('nav-audit');
+  if(auditNav)auditNav.style.display=getPerm('audit')?'':'none';
+  renderFamilyUserSwitcher();
+  renderPermSettings();
+}
+
+function renderFamilyUserSwitcher(){
+  const el=document.getElementById('family-user-switcher');if(!el)return;
+  if(!data.family.length){
+    el.innerHTML=`<div style="text-align:center;padding:24px 0;">
+      <div style="font-size:32px;margin-bottom:10px;">👨‍👩‍👧</div>
+      <div style="font-size:14px;font-weight:600;color:var(--plum);margin-bottom:6px;">Brak członków rodziny</div>
+      <div style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Dodaj pierwszą osobę, aby zacząć.</div>
+    </div>`;
+    return;
+  }
+  const roleLabel={admin:'👑 Administrator',adult:'✅ Dorosły',child:'🌱 Dziecko'};
+  const roleColor={admin:'var(--coral)',adult:'var(--mint-dark)',child:'var(--blue)'};
+  const isAdmin=getPerm('family');
+  // Stats per member
+  function memberStats(name){
+    const inc=data.income.filter(i=>i.who===name||i.createdBy===name).length;
+    const goals=data.goals.filter(g=>g.who===name||g.createdBy===name).length;
+    const dec=data.decisions.filter(d=>d.who===name||d.createdBy===name).length;
+    const parts=[];
+    if(inc)parts.push(inc+' dochód');
+    if(goals)parts.push(goals+' cel');
+    if(dec)parts.push(dec+' decyzja');
+    return parts.join(' · ')||'brak aktywności';
+  }
+  el.innerHTML=data.family.map((m,i)=>{
+    const isCurrent=currentUser&&currentUser.name===m.name;
+    const role=m.permission||'adult';
+    const stats=memberStats(m.name);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--sand-dark);">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="avatar ${m.cls||'av-wspolny'}" style="width:40px;height:40px;font-size:14px;${isCurrent?'border:2px solid var(--coral);':''}">${m.initials||m.name.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text-dark);">${m.name}${isCurrent?' <span style="font-size:10px;background:var(--coral-pale);color:var(--coral);padding:1px 6px;border-radius:100px;">aktywny</span>':''}</div>
+          <div style="font-size:11px;color:${roleColor[role]};font-weight:500;margin-top:1px;">${roleLabel[role]||role}</div>
+          <div style="font-size:10px;color:var(--text-soft);margin-top:2px;">${stats}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+        ${isAdmin?`<select onchange="changeMemberRole(${i},this.value)" style="font-size:11px;padding:4px 7px;max-width:130px;border-radius:6px;">
+          <option value="admin" ${role==='admin'?'selected':''}>👑 Admin</option>
+          <option value="adult" ${role==='adult'?'selected':''}>✅ Dorosły</option>
+          <option value="child" ${role==='child'?'selected':''}>🌱 Dziecko</option>
+        </select>`:''}
+        <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" onclick="switchUser(${i})" ${isCurrent?'disabled':''}>
+          ${isCurrent?'✓ Tu jesteś':'Przełącz'}
+        </button>
+        ${isAdmin&&i>0?`<button class="btn-icon" onclick="removeFamilyMember(${i})" title="Usuń z rodziny"><i class="ti ti-trash"></i></button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function removeFamilyMember(idx){
+  if(!canEdit('family'))return;
+  const member=data.family[idx];
+  if(!member)return;
+  if(currentUser&&currentUser.name===member.name){toast('Nie możesz usunąć aktywnego użytkownika');return;}
+  if(!confirm(`Usunąć ${member.name} z rodziny?
+
+Wszystkie wpisy z ich imieniem pozostaną w danych.`))return;
+  logAudit('remove_member',`Usunięto ${member.name} z rodziny`);
+  data.family.splice(idx,1);
+  saveData();renderFamilyPage();renderFamilyAvatars();renderGreeting();renderAll();
+  toast(member.name+' usunięty/a z rodziny');
+}
+
+function renderFamilyMembersList(){
+  // Already shown in switcher above — nothing extra needed
+}
+
+function renderPermSettings(){
+  const el=document.getElementById('perm-settings-rows');if(!el)return;
+  const rows=[
+    {key:'income',label:'Zarządzanie dochodami',desc:'Dodawanie i usuwanie źródeł dochodu'},
+    {key:'expenses',label:'Zarządzanie opłatami',desc:'Dodawanie i usuwanie stałych opłat'},
+    {key:'goals',label:'Cele finansowe',desc:'Tworzenie i modyfikowanie celów'},
+    {key:'calendar',label:'Kalendarz',desc:'Dodawanie zdarzeń do kalendarza'},
+    {key:'decisions',label:'Decyzje',desc:'Rejestrowanie dobrych i złych decyzji'},
+  ];
+  el.innerHTML=rows.map(r=>`
+    <div style="padding:10px 0;border-bottom:1px solid var(--sand-dark);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-dark);">${r.label}</div>
+          <div style="font-size:11px;color:var(--text-soft);">${r.desc}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;font-size:11px;">
+          <span style="background:var(--mint-pale);color:var(--mint-dark);padding:2px 8px;border-radius:100px;font-weight:600;">👑 Admin ✓</span>
+          <span style="background:${PERMS.adult[r.key]?'var(--mint-pale)':'var(--sand-dark)'};color:${PERMS.adult[r.key]?'var(--mint-dark)':'var(--text-soft)'};padding:2px 8px;border-radius:100px;font-weight:600;">✅ Dorosły ${PERMS.adult[r.key]?'✓':'✗'}</span>
+          <span style="background:${PERMS.child[r.key]?'var(--mint-pale)':'var(--sand-dark)'};color:${PERMS.child[r.key]?'var(--mint-dark)':'var(--text-soft)'};padding:2px 8px;border-radius:100px;font-weight:600;">🌱 Dziecko ${PERMS.child[r.key]?'✓':'✗'}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function changeMemberRole(idx, newRole){
+  if(!canEdit('family'))return;
+  const member=data.family[idx];
+  if(!member)return;
+  const oldRole=member.permission||'adult';
+  member.permission=newRole;
+  member.role=newRole==='child'?'child':'adult';
+  logAudit('change_role',`Zmieniono rolę ${member.name}: ${oldRole} → ${newRole}`);
+  saveData();
+  renderFamilyPage();
+  renderCurrentUser();
+  toast(`Rola ${member.name} zmieniona na: ${newRole}`);
+}
+
+function showFamAddForm(){
+  const form=document.getElementById('family-add-member-form');
+  const btn=document.getElementById('fam-add-btn');
+  if(form)form.style.display='block';
+  if(btn)btn.style.display='none';
+}
+
+function famAddMember(){
+  if(!canEdit('family'))return;
+  const name=document.getElementById('fam-name').value.trim();
+  const cls=document.getElementById('fam-cls').value;
+  const role=document.getElementById('fam-role').value;
+  if(!name){toast('Wpisz imię!');return;}
+  data.family.push({name,initials:name.slice(0,2).toUpperCase(),cls,permission:role,role:role==='child'?'child':'adult'});
+  logAudit('add_member',`Dodano członka rodziny: ${name} (${role})`);
+  document.getElementById('fam-name').value='';
+  document.getElementById('family-add-member-form').style.display='none';
+  document.getElementById('fam-add-btn').style.display='';
+  saveData();renderFamilyPage();renderFamilyAvatars();renderGreeting();
+  // Update all person selects
+  populateFamilySelect('inc-who',false,currentUser?.name||null);
+  populateFamilySelect('goal-who',true,currentUser?.name||null);
+  populateFamilySelect('dec-who',false,currentUser?.name||null);
+  populateFamilySelect('ev-who',false,currentUser?.name||null);
+  toast(name+' dodany/a do rodziny ✓');
+}
+
+// ── AUDIT LOG RENDER ──
+function renderAuditLog(){
+  const el=document.getElementById('audit-log-list');if(!el)return;
+  const log=data.auditLog||[];
+  if(!log.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:16px 20px;">Brak wpisów. Historia zmian pojawi się tutaj po pierwszej zmianie.</div>';
+    return;
+  }
+  const actionLabel={
+    add_income:'Dodano dochód',remove_income:'Usunięto dochód',
+    add_expense:'Dodano opłatę',remove_expense:'Usunięto opłatę',
+    add_goal:'Dodano cel',remove_goal:'Usunięto cel',
+    add_decision:'Zapisano decyzję',add_cal_event:'Dodano zdarzenie',
+    add_member:'Dodano osobę',change_role:'Zmieniono rolę',
+    remove_cal_event:'Usunięto zdarzenie'
+  };
+  const actionColor={
+    add_income:'var(--mint-dark)',add_goal:'var(--blue)',add_decision:'var(--mint-dark)',
+    remove_income:'var(--red)',remove_expense:'var(--red)',remove_goal:'var(--red)',
+    add_expense:'var(--text-dark)',add_cal_event:'var(--amber-dark)',
+    change_role:'var(--plum-light)',add_member:'var(--mint-dark)',remove_cal_event:'var(--red)'
+  };
+  const actionIcon={
+    add_income:'ti-plus',remove_income:'ti-minus',
+    add_expense:'ti-plus',remove_expense:'ti-minus',
+    add_goal:'ti-star',remove_goal:'ti-star-off',
+    add_decision:'ti-thumb-up',add_cal_event:'ti-calendar-plus',
+    add_member:'ti-user-plus',change_role:'ti-shield',remove_cal_event:'ti-calendar-minus'
+  };
+  el.innerHTML=log.map(entry=>{
+    const d=new Date(entry.ts);
+    const dateStr=d.toLocaleDateString('pl-PL',{day:'numeric',month:'short',year:'numeric'});
+    const timeStr=d.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+    const color=actionColor[entry.action]||'var(--text-mid)';
+    const icon=actionIcon[entry.action]||'ti-pencil';
+    const label=actionLabel[entry.action]||entry.action;
+    return `<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 20px;border-bottom:1px solid var(--sand-dark);">
+      <div style="width:30px;height:30px;border-radius:8px;background:var(--sand-dark);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+        <i class="ti ${icon}" style="font-size:14px;color:${color};"></i>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-dark);">${entry.desc||label}</div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:2px;">
+          <span style="font-weight:600;color:var(--plum-light);">${entry.user}</span>
+          · ${dateStr} o ${timeStr}
+        </div>
+        ${entry.oldVal!==undefined?`<div style="font-size:11px;color:var(--text-soft);margin-top:2px;">Poprzednia wartość: <span style="text-decoration:line-through;">${entry.oldVal}</span> → <span style="font-weight:600;">${entry.newVal||'—'}</span></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
+// ── FREQUENCY FORM HELPERS ──
+const FREQ_LABELS={
+  weekly:'Co tydzień',fortnightly:'Co dwa tygodnie',monthly:'Co miesiąc',
+  bimonthly:'Co dwa miesiące',quarterly:'Co kwartał',annual:'Raz w roku'
+};
+const FREQ_MONTHLY={
+  weekly:52/12,fortnightly:26/12,monthly:1,bimonthly:0.5,quarterly:1/3,annual:1/12
+};
+
+function onIncFreqChange(){
+  const freq=document.getElementById('inc-freq')?.value||'monthly';
+  const isWeekly=freq==='weekly'||freq==='fortnightly';
+  const dayFg=document.getElementById('inc-day-fg');
+  const wdFg=document.getElementById('inc-weekday-fg');
+  const lbl=document.getElementById('inc-day-label');
+  const hint=document.getElementById('inc-freq-hint');
+  if(dayFg)dayFg.style.display=isWeekly?'none':'';
+  if(wdFg)wdFg.style.display=isWeekly?'':'none';
+  const amtEl=document.getElementById('inc-amt');
+  const amt=parseFloat(amtEl?.value)||0;
+  const monthlyEq=amt*freqToMonthlyFactor(freq);
+  if(hint){
+    const examples={
+      weekly:'Np. pensja tygodniowa 935 € = ok. '+Math.round(935*52/12)+' €/mies.',
+      fortnightly:'Np. pensja co 2 tygodnie 1870 € = ok. '+Math.round(1870*26/12)+' €/mies.',
+      monthly:'Standardowa pensja miesięczna',
+      quarterly:'Np. kwartalny bonus',
+      annual:'Np. zwrot podatku raz w roku'
+    };
+    hint.textContent=amt>0
+      ?`Równoważnik miesięczny: ~${Math.round(monthlyEq).toLocaleString('pl-PL')} €`
+      :(examples[freq]||'');
+  }
+}
+
+function onExpFreqChange(){
+  const freq=document.getElementById('exp-freq')?.value||'monthly';
+  const lbl=document.getElementById('exp-day-label');
+  const hint=document.getElementById('exp-freq-hint');
+  const amt=parseFloat(document.getElementById('exp-amt')?.value)||0;
+  if(lbl){
+    if(freq==='annual')lbl.textContent='Dzień roku (dzień miesiąca)';
+    else lbl.textContent='Dzień miesiąca';
+  }
+  if(hint){
+    const monthlyEq=amt*freqToMonthlyFactor(freq);
+    hint.textContent=amt>0&&freq!=='monthly'
+      ?`Równoważnik miesięczny: ~${Math.round(monthlyEq).toLocaleString('pl-PL')} €`
+      :'';
+  }
+}
+
+// Update hint when amount changes
+function initFreqHints(){
+  const incAmt=document.getElementById('inc-amt');
+  if(incAmt)incAmt.addEventListener('input',onIncFreqChange);
+  const expAmt=document.getElementById('exp-amt');
+  if(expAmt)expAmt.addEventListener('input',onExpFreqChange);
+}
+
+// ── MOBILE HELPERS ──
+function openMobMenu(){
+  document.getElementById('mob-menu-overlay').classList.add('open');
+  // sync family avatars
+  const src=document.getElementById('fav-row');
+  const dst=document.getElementById('mob-fav-row');
+  if(src&&dst)dst.innerHTML=src.innerHTML;
+}
+function closeMobMenuOverlay(e){
+  // only close if tapping the dark backdrop, not the panel
+  if(e.target===document.getElementById('mob-menu-overlay')){
+    document.getElementById('mob-menu-overlay').classList.remove('open');
+  }
+}
+function closeMobMenuBtn(){
+  document.getElementById('mob-menu-overlay').classList.remove('open');
+}
+// Swipe left on the panel to close
+(function(){
+  let sx=0,sy=0;
+  const panel=document.querySelector('.mob-menu-panel');
+  if(!panel)return;
+  panel.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  panel.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=Math.abs(e.changedTouches[0].clientY-sy);
+    if(dx<-40&&dy<30)closeMobMenuBtn();
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
