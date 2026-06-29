@@ -980,7 +980,6 @@ function loadData(){
     }else if(data.family&&data.family.length){
       // Default to first family member (admin)
       currentUser=data.family[0];
-      sessionStorage.setItem('pip_current_user',JSON.stringify(currentUser));
     }
   }catch(e){}
 }
@@ -1056,7 +1055,7 @@ function switchUser(idx){
   const member=data.family[idx];
   if(!member)return;
   currentUser=member;
-  try{sessionStorage.setItem('pip_current_user',JSON.stringify(currentUser));}catch(e){}
+  
   renderAll();
   renderCurrentUser();
   // Re-populate all person selects with new default
@@ -1100,7 +1099,7 @@ function logAudit(action,desc,oldVal,newVal){
   // Keep last 200 entries
   if(data.auditLog.length>200)data.auditLog.length=200;
 }
-function isNewUser(){return !data.onboardingComplete;}
+function isNewUser(){return !data.onboardingComplete||!data.family||data.family.length===0;}
 function loadDemo(){
   data=JSON.parse(JSON.stringify(DEMO));
   saveData();renderAll();hideOnboarding();
@@ -1876,23 +1875,44 @@ function renderIncome(){
   el.innerHTML=data.income.map((i,idx)=>{
     const fMember=data.family.find(f=>f.name===i.who);
     const cls=fMember?fMember.cls:'av-wspolny';
-    return `<div class="lrow">
-      <div class="lrow-left">
-        <div class="avatar ${cls}">${i.who.slice(0,2).toUpperCase()}</div>
-        <div>
-          <div class="lrow-name">${i.who} · ${i.cat}</div>
-          <div class="lrow-sub">
-            ${FREQ_LABELS[i.freq||'monthly']} · ${i.amt.toLocaleString('pl-PL')} €
-            ${i.freq&&i.freq!=='monthly'?' (≈'+Math.round(i.amt*freqToMonthlyFactor(i.freq)).toLocaleString('pl-PL')+' €/mies.)':''}
-            · ${i.freq==='weekly'||i.freq==='fortnightly'?['Nd','Pn','Wt','Śr','Cz','Pt','Sb'][i.weekday||5]:'dzień '+( i.day||'?')}
-            ${i.createdBy&&i.createdBy!==i.who?' · '+i.createdBy:''}
+    const incFreqOpts=Object.entries(FREQ_LABELS).map(([k,v])=>`<option value="${k}"${k===(i.freq||'monthly')?' selected':''}>${v}</option>`).join('');
+    const incCatOpts=['Wynagrodzenie','Bonus','Dodatkowy dochód','Inne'].map(c=>`<option${c===i.cat?' selected':''}>${c}</option>`).join('');
+    return `<div style="padding:2px 0 4px;">
+      <div class="lrow" style="padding:8px 0 4px;">
+        <div class="lrow-left">
+          <div class="avatar ${cls}">${i.who.slice(0,2).toUpperCase()}</div>
+          <div>
+            <div class="lrow-name">${i.who} · ${i.cat}</div>
+            <div class="lrow-sub">
+              ${FREQ_LABELS[i.freq||'monthly']} · ${i.amt.toLocaleString('pl-PL')} €
+              ${i.freq&&i.freq!=='monthly'?' (≈'+Math.round(i.amt*freqToMonthlyFactor(i.freq)).toLocaleString('pl-PL')+' €/mies.)':''}
+              · ${i.freq==='weekly'||i.freq==='fortnightly'?['Su','Mo','Tu','We','Th','Fr','Sa'][i.weekday||5]:'day '+(i.day||'?')}
+              ${i.createdBy&&i.createdBy!==i.who?' · '+i.createdBy:''}
+            </div>
           </div>
         </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="lrow-amt income-amt">${i.amt.toLocaleString('pl-PL')} €</span>
+          ${canDelete(i,false)?`<button class="btn-icon" onclick="toggleEditIncome(${idx})" title="Edytuj"><i class="ti ti-pencil"></i></button>`:''}
+          ${canDelete(i,false)?`<button class="btn-icon" onclick="removeIncome(${idx})" title="Usuń"><i class="ti ti-trash"></i></button>`:''}
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:9px;">
-        <span class="lrow-amt income-amt">${i.amt.toLocaleString('pl-PL')} €</span>
-        <button class="btn-icon" onclick="removeIncome(${idx})"><i class="ti ti-trash"></i></button>
-      </div></div>`;
+      <div class="edit-inline" id="income-edit-${idx}">
+        <div style="font-size:12px;font-weight:600;color:var(--plum);margin-bottom:10px;">Edytuj dochód</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;">
+          <div><label class="fl">Osoba</label><select id="ie-who-${idx}">${familyOptions(i.who)}</select></div>
+          <div><label class="fl">Rodzaj</label><select id="ie-cat-${idx}">${incCatOpts}</select></div>
+          <div><label class="fl">Kwota (€)</label><input type="number" id="ie-amt-${idx}" value="${i.amt}" min="0.01" step="0.01"/></div>
+          <div><label class="fl">Częstotliwość</label><select id="ie-freq-${idx}">${incFreqOpts}</select></div>
+          <div><label class="fl">Dzień miesiąca</label><input type="number" id="ie-day-${idx}" value="${i.day||1}" min="1" max="31"/></div>
+          <div><label class="fl">Opis</label><input type="text" id="ie-desc-${idx}" value="${i.desc||''}"/></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="saveEditIncome(${idx})"><i class="ti ti-check"></i> Zapisz</button>
+          <button class="btn btn-ghost" onclick="closeAllEditForms()">Anuluj</button>
+        </div>
+      </div>
+    </div>`;
   }).join('');
   const t=document.getElementById('inc-list-title');
   if(t)t.textContent=`Wasze dochody · ok. ${Math.round(totalIncome()).toLocaleString('pl-PL')} €/mies.`;
@@ -1917,23 +1937,44 @@ function removeIncome(idx){const rec=data.income[idx];if(!canDelete(rec))return;
 function renderExpenses(){
   const el=document.getElementById('expense-list');if(!el)return;
   if(!data.expenses.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Brak opłat.</div>';return;}
-  el.innerHTML=data.expenses.map((e,idx)=>`
-    <div class="lrow">
-      <div class="lrow-left">
-        <div class="cat-icon"><i class="ti ${EXP_ICONS[e.cat]||'ti-dots'}"></i></div>
-        <div>
-          <div class="lrow-name">${e.cat}${e.desc?' · '+e.desc:''}</div>
-          <div class="lrow-sub">
-            ${FREQ_LABELS[e.freq||'monthly']} · ${e.amt.toLocaleString('pl-PL')} €
-            ${e.freq&&e.freq!=='monthly'?' (≈'+Math.round(e.amt*freqToMonthlyFactor(e.freq)).toLocaleString('pl-PL')+' €/mies.)':''}
-            · dzień: ${e.day||'?'}
+  el.innerHTML=data.expenses.map((e,idx)=>(()=>{
+    const eFreqOpts=Object.entries(FREQ_LABELS).map(([k,v])=>`<option value="${k}"${k===(e.freq||'monthly')?' selected':''}>${v}</option>`).join('');
+    const eCatOpts=['Mieszkanie','Media','Internet / telefon','Samochód','Paliwo','Ubezpieczenia','Szkoła dzieci',"Zajęcia dzieci",'Subskrypcje','Kieszonkowe','Inne'].map(c=>`<option${c===e.cat?' selected':''}>${c}</option>`).join('');
+    return `<div style="padding:2px 0 4px;">
+      <div class="lrow" style="padding:8px 0 4px;">
+        <div class="lrow-left">
+          <div class="cat-icon"><i class="ti ${EXP_ICONS[e.cat]||'ti-dots'}"></i></div>
+          <div>
+            <div class="lrow-name">${e.cat}${e.desc?' · '+e.desc:''}</div>
+            <div class="lrow-sub">
+              ${FREQ_LABELS[e.freq||'monthly']} · ${e.amt.toLocaleString('pl-PL')} €
+              ${e.freq&&e.freq!=='monthly'?' (≈'+Math.round(e.amt*freqToMonthlyFactor(e.freq)).toLocaleString('pl-PL')+' €/mies.)':''}
+              · day: ${e.day||'?'}
+            </div>
           </div>
         </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="lrow-amt expense-amt">-${e.amt.toLocaleString('pl-PL')} €</span>
+          ${canDelete(e,false)?`<button class="btn-icon" onclick="toggleEditExpense(${idx})" title="Edytuj"><i class="ti ti-pencil"></i></button>`:''}
+          ${canDelete(e,false)?`<button class="btn-icon" onclick="removeExpense(${idx})" title="Usuń"><i class="ti ti-trash"></i></button>`:''}
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:9px;">
-        <span class="lrow-amt expense-amt">-${e.amt.toLocaleString('pl-PL')} €</span>
-        <button class="btn-icon" onclick="removeExpense(${idx})"><i class="ti ti-trash"></i></button>
-      </div></div>`).join('');
+      <div class="edit-inline" id="expense-edit-${idx}">
+        <div style="font-size:12px;font-weight:600;color:var(--plum);margin-bottom:10px;">Edytuj opłatę</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;">
+          <div><label class="fl">Kategoria</label><select id="ee-cat-${idx}">${eCatOpts}</select></div>
+          <div><label class="fl">Częstotliwość</label><select id="ee-freq-${idx}">${eFreqOpts}</select></div>
+          <div><label class="fl">Kwota (€)</label><input type="number" id="ee-amt-${idx}" value="${e.amt}" min="0.01" step="0.01"/></div>
+          <div><label class="fl">Dzień miesiąca</label><input type="number" id="ee-day-${idx}" value="${e.day||1}" min="1" max="31"/></div>
+          <div style="grid-column:span 2;"><label class="fl">Opis</label><input type="text" id="ee-desc-${idx}" value="${e.desc||''}"/></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="saveEditExpense(${idx})"><i class="ti ti-check"></i> Zapisz</button>
+          <button class="btn btn-ghost" onclick="closeAllEditForms()">Anuluj</button>
+        </div>
+      </div>
+    </div>`;
+  })()).join('');
   const t=document.getElementById('exp-list-title');
   if(t)t.textContent=`Stałe opłaty · ok. ${Math.round(totalExpenses()).toLocaleString('pl-PL')} €/mies.`;
 }
@@ -1955,15 +1996,65 @@ function removeExpense(idx){const rec=data.expenses[idx];if(!canDelete(rec))retu
 function renderGoalEditList(){
   populateFamilySelect('goal-who',true,currentUser?.name||null);
   const el=document.getElementById('goal-edit-list');if(!el)return;
-  if(!data.goals.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Dodajcie pierwszy cel!</div>';return;}
+  if(!data.goals.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text-soft);padding:8px 0;">Dodaj pierwszy cel!</div>';
+    return;
+  }
   el.innerHTML=data.goals.map((g,idx)=>{
     const pct=Math.round(Math.min(100,g.target>0?g.current/g.target*100:0));
-    return `<div class="lrow">
-      <div class="lrow-left">
-        <div class="cat-icon" style="font-size:20px;background:var(--plum-pale);">${g.emoji||'🎯'}</div>
-        <div><div class="lrow-name">${g.name}</div><div class="lrow-sub">${g.current.toLocaleString('pl-PL')} € / ${g.target.toLocaleString('pl-PL')} € · ${pct}% · ${g.monthly||0} €/mies.</div></div>
+    const remaining=Math.max(0,g.target-g.current);
+    const isDone=g.current>=g.target;
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--sand-dark);">
+      <div class="lrow" style="border:none;padding:0 0 8px;">
+        <div class="lrow-left">
+          <div class="cat-icon" style="font-size:20px;background:var(--plum-pale);">${g.emoji||'🎯'}</div>
+          <div>
+            <div class="lrow-name">${g.name}</div>
+            <div class="lrow-sub">${g.current.toLocaleString('pl-PL')} € / ${g.target.toLocaleString('pl-PL')} € · ${pct}%${g.monthly?' · '+g.monthly+' €/mies.':''}</div>
+            <div class="goal-list-track"><div class="goal-list-fill" style="width:${pct}%;${isDone?'background:var(--coral);':''}"></div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center;">
+          ${!isDone?`<button class="btn btn-ghost" style="font-size:11px;padding:5px 9px;white-space:nowrap;"
+            onclick="toggleGoalSavings(${idx})"><i class="ti ti-plus"></i> Dodaj oszczędności</button>`
+            :'<span style="font-size:11px;color:var(--coral);font-weight:600;">🎉 Gotowe!</span>'}
+          ${canDelete(g,false)?`<button class="btn-icon" onclick="toggleEditGoal(${idx})" title="Edytuj cel"><i class="ti ti-pencil"></i></button>`:''}
+          ${canDelete(g,false)?`<button class="btn-icon" onclick="removeGoal(${idx})" title="Usuń cel"><i class="ti ti-trash"></i></button>`:''}
+        </div>
       </div>
-      <button class="btn-icon" onclick="removeGoal(${idx})"><i class="ti ti-trash"></i></button>
+      <!-- Inline goal edit form -->
+      <div class="edit-inline" id="goal-edit-form-${idx}">
+        <div style="font-size:12px;font-weight:600;color:var(--plum);margin-bottom:10px;">Edytuj cel</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;">
+          <div><label class="fl">Nazwa celu</label><input type="text" id="ge-name-${idx}" value="${g.name}"/></div>
+          <div><label class="fl">Emoji</label><input type="text" id="ge-emoji-${idx}" value="${g.emoji||'🎯'}" maxlength="4"/></div>
+          <div><label class="fl">Cel (€)</label><input type="number" id="ge-target-${idx}" value="${g.target}" min="0"/></div>
+          <div><label class="fl">Miesięczna wpłata (€)</label><input type="number" id="ge-monthly-${idx}" value="${g.monthly||0}" min="0"/></div>
+          <div><label class="fl">Termin</label><input type="month" id="ge-deadline-${idx}" value="${g.deadline||''}"/></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-soft);margin-bottom:10px;">
+          Dotychczasowe oszczędności (${g.current.toLocaleString('pl-PL')} €) nie są zmieniane przez edycję. Użyj "Dodaj oszczędności" aby dodać nowe kwoty.
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="saveEditGoal(${idx})"><i class="ti ti-check"></i> Zapisz</button>
+          <button class="btn btn-ghost" onclick="closeAllEditForms()">Anuluj</button>
+        </div>
+      </div>
+      <!-- Inline savings form -->
+      <div class="goal-savings-form" id="goal-savings-${idx}">
+        <div style="font-size:12px;font-weight:600;color:var(--mint-dark);margin-bottom:8px;">
+          Dodaj oszczędności do: ${g.name} <span style="font-weight:400;color:var(--text-soft);">(${remaining.toLocaleString('pl-PL')} € pozostało)</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-size:18px;color:var(--text-soft);">€</span>
+          <input type="number" id="goal-sav-amt-${idx}" placeholder="Kwota"
+                 min="0.01" max="${remaining}" step="0.01"
+                 style="flex:1;font-size:15px;font-weight:600;"
+                 onkeydown="if(event.key==='Enter')addGoalSavings(${idx})"/>
+          <button class="btn btn-primary" style="padding:8px 14px;" onclick="addGoalSavings(${idx})">Zapisz</button>
+          <button class="btn btn-ghost" style="padding:8px 10px;" onclick="closeGoalSavings()">✕</button>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -2092,7 +2183,6 @@ if(isNewUser()){
 const todayStr=new Date().toISOString().split('T')[0];
 const evDateEl=document.getElementById('ev-date');
 if(evDateEl)evDateEl.value=todayStr;
-initFreqHints();
 </script>
 
 <!-- ── ONBOARDING OVERLAY ── -->
@@ -2114,7 +2204,7 @@ initFreqHints();
     <div id="ob-s1" class="ob-step" style="display:none;">
       <div class="ob-step-header">
         <div class="ob-progress" id="ob-prog"></div>
-        <div class="ob-step-eyebrow">Krok 1 z 4</div>
+        <div class="ob-step-eyebrow">Krok 1 z 5</div>
         <div class="ob-step-title">Jak masz na imię?</div>
         <div class="ob-step-sub">PIP Family będzie Cię witać po imieniu i personalizować plany dla Waszej rodziny.</div>
       </div>
@@ -2156,7 +2246,7 @@ initFreqHints();
     <div id="ob-s2" class="ob-step" style="display:none;">
       <div class="ob-step-header">
         <div class="ob-progress" id="ob-prog2"></div>
-        <div class="ob-step-eyebrow">Krok 2 z 4</div>
+        <div class="ob-step-eyebrow">Krok 2 z 5</div>
         <div class="ob-step-title">Jakie pieniądze wpływają do Waszego domu?</div>
         <div class="ob-step-sub">Dodajcie wszystkie miesięczne źródła dochodu — wynagrodzenia, becikowe, dodatkowe przychody.</div>
       </div>
@@ -2185,7 +2275,7 @@ initFreqHints();
     <div id="ob-s3" class="ob-step" style="display:none;">
       <div class="ob-step-header">
         <div class="ob-progress" id="ob-prog3"></div>
-        <div class="ob-step-eyebrow">Krok 3 z 4</div>
+        <div class="ob-step-eyebrow">Krok 3 z 5</div>
         <div class="ob-step-title">Jakie stałe opłaty płacicie co miesiąc?</div>
         <div class="ob-step-sub">Czynsz, szkoła, ubezpieczenia — wszystko co wychodzi regularnie. PIP pomoże Wam przewidzieć kiedy.</div>
       </div>
@@ -2220,7 +2310,7 @@ initFreqHints();
     <div id="ob-s4" class="ob-step" style="display:none;">
       <div class="ob-step-header">
         <div class="ob-progress" id="ob-prog4"></div>
-        <div class="ob-step-eyebrow">Krok 4 z 4</div>
+        <div class="ob-step-eyebrow">Krok 4 z 5</div>
         <div class="ob-step-title">Na co oszczędzacie?</div>
         <div class="ob-step-sub">Dodajcie marzenia Waszej rodziny — wakacje, samochód, nowy sprzęt, fundusz bezpieczeństwa. PIP będzie śledzić postęp.</div>
       </div>
@@ -2246,7 +2336,39 @@ initFreqHints();
       </div>
       <div class="ob-nav">
         <button class="ob-btn-back" onclick="obGo(3)"><i class="ti ti-arrow-left"></i> Wstecz</button>
-        <button class="ob-btn-next" onclick="obFinish()" style="background:var(--coral);"><i class="ti ti-check"></i> Gotowe!</button>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="ob-skip" onclick="obGo('4b')">pomiń</button>
+          <button class="ob-btn-next" onclick="obGo('4b')">Dalej <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 4b: Initial Balance -->
+    <div id="ob-s4b" class="ob-step" style="display:none;">
+      <div class="ob-step-header">
+        <div class="ob-progress" id="ob-prog4b"></div>
+        <div class="ob-step-eyebrow">Krok 5 z 5</div>
+        <div class="ob-step-title">Ile masz teraz dostepne do wydania?</div>
+        <div class="ob-step-sub">Sprawdz aplikacje bankowa i wpisz aktualne saldo. Mozesz je zmienic w dowolnym momencie.</div>
+      </div>
+      <div class="ob-card">
+        <label class="fl">Dostepne do wydania (EUR)</label>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+          <span style="font-size:26px;color:var(--text-soft);font-weight:300;">€</span>
+          <input type="number" id="ob-balance" placeholder="np. 2400" min="0"
+                 style="font-size:24px;font-weight:600;flex:1;border:none;background:transparent;outline:none;color:var(--plum);"
+                 onkeydown="if(event.key==='Enter')obSaveBalance()"/>
+        </div>
+        <div style="height:1px;background:var(--plum-light);margin:8px 0 14px;opacity:.3;"></div>
+        <div style="font-size:12px;color:var(--text-soft);line-height:1.6;">
+          💡 Nie jestes pewny/a? Wpisz przyblizenie - mozesz poprawic pozniej.
+        </div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn-back" onclick="obGo(4)"><i class="ti ti-arrow-left"></i> Back</button>
+        <button class="ob-btn-next" onclick="obSaveBalance()" style="background:var(--coral);">
+          <i class="ti ti-check"></i> Done!
+        </button>
       </div>
     </div>
 
@@ -2268,7 +2390,7 @@ initFreqHints();
 
 <script>
 // ── ONBOARDING ENGINE ──
-const OB_STEPS=4;
+const OB_STEPS=5;
 
 function showOnboarding(){
   document.getElementById('ob-overlay').style.display='flex';
@@ -2279,18 +2401,23 @@ function hideOnboarding(){
 }
 
 function obProgress(step){
-  ['','2','3','4'].forEach((sfx,idx)=>{
+  // Map step to numeric position for progress bar
+  const stepNum={'4b':5,0:0,1:1,2:2,3:3,4:4,5:5}[step]||0;
+  ['','2','3','4','4b'].forEach(sfx=>{
     const el=document.getElementById('ob-prog'+sfx);
-    if(el)el.innerHTML=Array.from({length:OB_STEPS},(_,j)=>`<div class="ob-prog-dot ${j+1<step?'done':j+1===step?'active':''}"></div>`).join('');
+    if(el)el.innerHTML=Array.from({length:OB_STEPS},(_,j)=>`<div class="ob-prog-dot ${j+1<stepNum?'done':j+1===stepNum?'active':''}"></div>`).join('');
   });
 }
 
 function obGo(step){
-  for(let i=0;i<=5;i++){const el=document.getElementById('ob-s'+i);if(el)el.style.display=i===step?'':'none';}
+  const ALL_STEPS=[0,1,2,3,4,'4b',5];
+  ALL_STEPS.forEach(s=>{
+    const el=document.getElementById('ob-s'+s);
+    if(el)el.style.display=s===step?'':'none';
+  });
   obProgress(step);
   if(step===1){
     obRenderMembers();
-    // Pre-fill main user name if already set
     const ni=document.getElementById('ob-main-name');
     if(ni&&data._mainUserSet&&data.family[0]){
       ni.value=data.family[0].name;
@@ -2301,6 +2428,12 @@ function obGo(step){
   if(step===2){obRenderIncomeList();obPopulateWhoSelect();}
   if(step===3)obRenderExpenseList();
   if(step===4)obRenderGoalList();
+  if(step==='4b'){
+    // Pre-fill if already set
+    const balEl=document.getElementById('ob-balance');
+    if(balEl&&data.balance>0)balEl.value=data.balance;
+    setTimeout(()=>balEl?.focus(),100);
+  }
   const ov=document.getElementById('ob-overlay');
   if(ov)ov.scrollTop=0;
 }
@@ -2332,7 +2465,7 @@ function obAddMainUser(){
     // Main user (first added) is always admin
   data.family.unshift({name,initials,cls:role,role:'adult',permission:'admin'});
   currentUser=data.family[0];
-  try{sessionStorage.setItem('pip_current_user',JSON.stringify(currentUser));}catch(e){}
+  
     data._mainUserSet=true;
   }
   saveData();
@@ -2432,6 +2565,13 @@ function obValidateStep1(){
   obGo(2);
 }
 
+function obSaveBalance(){
+  const val=parseFloat(document.getElementById('ob-balance')?.value)||0;
+  data.balance=val;
+  saveData();
+  obFinish();
+}
+
 function obFinish(){
   data.onboardingComplete=true;saveData();
   const ti=totalIncome(),te=totalExpenses();
@@ -2440,6 +2580,7 @@ function obFinish(){
   if(s)s.innerHTML=`
     <div class="ob-summary-row"><span class="ob-summary-label">Twoje imię</span><span class="ob-summary-val">${mainName||'—'}</span></div>
     <div class="ob-summary-row"><span class="ob-summary-label">Członkowie rodziny</span><span class="ob-summary-val">${data.family.length||'—'}</span></div>
+    <div class="ob-summary-row"><span class="ob-summary-label">Dostępne do wydania</span><span class="ob-summary-val">${data.balance.toLocaleString('pl-PL')} €</span></div>
     <div class="ob-summary-row"><span class="ob-summary-label">Miesięczne dochody</span><span class="ob-summary-val">${ti.toLocaleString('pl-PL')} €</span></div>
     <div class="ob-summary-row"><span class="ob-summary-label">Stałe opłaty</span><span class="ob-summary-val">${te.toLocaleString('pl-PL')} €</span></div>
     <div class="ob-summary-row"><span class="ob-summary-label">Wolne środki / mies.</span><span class="ob-summary-val" style="color:var(--mint-dark);">${(ti-te).toLocaleString('pl-PL')} €</span></div>
@@ -2669,18 +2810,23 @@ function showFamAddForm(){
 }
 
 function famAddMember(){
-  if(!canEdit('family'))return;
+  if(data.family.length>0&&!canEdit('family'))return;
   const name=document.getElementById('fam-name').value.trim();
   const cls=document.getElementById('fam-cls').value;
-  const role=document.getElementById('fam-role').value;
+  const role=data.family.length===0?'admin':document.getElementById('fam-role').value;
   if(!name){toast('Wpisz imię!');return;}
-  data.family.push({name,initials:name.slice(0,2).toUpperCase(),cls,permission:role,role:role==='child'?'child':'adult'});
+  const newMember={name,initials:name.slice(0,2).toUpperCase(),cls,permission:role,role:role==='child'?'child':'adult',memberId:generateMemberId()};
+  data.family.push(newMember);
+  if(data.family.length===1){
+    currentUser=data.family[0];
+    data.onboardingComplete=true;
+    try{localStorage.setItem('pip_active_member_id',currentUser.memberId);}catch(e){}
+  }
   logAudit('add_member',`Dodano członka rodziny: ${name} (${role})`);
   document.getElementById('fam-name').value='';
   document.getElementById('family-add-member-form').style.display='none';
   document.getElementById('fam-add-btn').style.display='';
   saveData();renderFamilyPage();renderFamilyAvatars();renderGreeting();
-  // Update all person selects
   populateFamilySelect('inc-who',false,currentUser?.name||null);
   populateFamilySelect('goal-who',true,currentUser?.name||null);
   populateFamilySelect('dec-who',false,currentUser?.name||null);
@@ -2700,9 +2846,11 @@ function renderAuditLog(){
     add_income:'Dodano dochód',remove_income:'Usunięto dochód',
     add_expense:'Dodano opłatę',remove_expense:'Usunięto opłatę',
     add_goal:'Dodano cel',remove_goal:'Usunięto cel',
+    goal_progress:'Dodano oszczędności',
     add_decision:'Zapisano decyzję',add_cal_event:'Dodano zdarzenie',
     add_member:'Dodano osobę',change_role:'Zmieniono rolę',
-    remove_cal_event:'Usunięto zdarzenie'
+    remove_cal_event:'Usunięto zdarzenie',
+    edit_income:'Edytowano dochód',edit_expense:'Edytowano opłatę',edit_goal:'Edytowano cel'
   };
   const actionColor={
     add_income:'var(--mint-dark)',add_goal:'var(--blue)',add_decision:'var(--mint-dark)',
@@ -2714,8 +2862,10 @@ function renderAuditLog(){
     add_income:'ti-plus',remove_income:'ti-minus',
     add_expense:'ti-plus',remove_expense:'ti-minus',
     add_goal:'ti-star',remove_goal:'ti-star-off',
+    goal_progress:'ti-piggy-bank',
     add_decision:'ti-thumb-up',add_cal_event:'ti-calendar-plus',
-    add_member:'ti-user-plus',change_role:'ti-shield',remove_cal_event:'ti-calendar-minus'
+    add_member:'ti-user-plus',change_role:'ti-shield',remove_cal_event:'ti-calendar-minus',
+    edit_income:'ti-pencil',edit_expense:'ti-pencil',edit_goal:'ti-pencil'
   };
   el.innerHTML=log.map(entry=>{
     const d=new Date(entry.ts);
@@ -2801,6 +2951,116 @@ function initFreqHints(){
   if(expAmt)expAmt.addEventListener('input',onExpFreqChange);
 }
 
+function closeAllEditForms(){
+  document.querySelectorAll('.edit-inline').forEach(f=>f.classList.remove('open'));
+}
+
+function familyOptions(selected){
+  return (data.family||[]).map(f=>
+    `<option value="${f.name}"${f.name===selected?' selected':''}>${f.name}</option>`
+  ).join('');
+}
+
+function toggleEditIncome(idx){
+  closeAllEditForms();closeGoalSavings();
+  const el=document.getElementById('income-edit-'+idx);
+  if(el)el.classList.add('open');
+}
+
+function toggleEditExpense(idx){
+  closeAllEditForms();closeGoalSavings();
+  const el=document.getElementById('expense-edit-'+idx);
+  if(el)el.classList.add('open');
+}
+
+function toggleEditGoal(idx){
+  closeAllEditForms();closeGoalSavings();
+  const el=document.getElementById('goal-edit-form-'+idx);
+  if(el)el.classList.add('open');
+}
+
+function saveEditIncome(idx){
+  const rec=data.income[idx];if(!rec)return;
+  if(!canDelete(rec))return; // same ownership rule as delete
+  const oldDesc=`${rec.who} · ${rec.cat} · ${rec.amt} € · ${rec.freq||'monthly'}`;
+  const newWho=document.getElementById(`ie-who-${idx}`)?.value||rec.who;
+  const newCat=document.getElementById(`ie-cat-${idx}`)?.value||rec.cat;
+  const newAmt=parseFloat(document.getElementById(`ie-amt-${idx}`)?.value)||rec.amt;
+  const newFreq=document.getElementById(`ie-freq-${idx}`)?.value||rec.freq||'monthly';
+  const newDay=parseInt(document.getElementById(`ie-day-${idx}`)?.value)||rec.day||1;
+  const newDesc=document.getElementById(`ie-desc-${idx}`)?.value??rec.desc;
+  if(!newAmt||newAmt<=0){toast('Wpisz prawidłową kwotę');return;}
+  rec.who=newWho;rec.cat=newCat;rec.amt=newAmt;rec.freq=newFreq;rec.day=newDay;rec.desc=newDesc;
+  const newDescStr=`${rec.who} · ${rec.cat} · ${rec.amt} € · ${rec.freq}`;
+  logAudit('edit_income',`Edited income: ${rec.who}`,oldDesc,newDescStr);
+  saveData();renderAll();toast('Dochód zaktualizowany ✓');
+}
+
+function saveEditExpense(idx){
+  const rec=data.expenses[idx];if(!rec)return;
+  if(!canDelete(rec))return;
+  const oldDesc=`${rec.cat} · ${rec.amt} € · ${rec.freq||'monthly'}`;
+  const newCat=document.getElementById(`ee-cat-${idx}`)?.value||rec.cat;
+  const newAmt=parseFloat(document.getElementById(`ee-amt-${idx}`)?.value)||rec.amt;
+  const newFreq=document.getElementById(`ee-freq-${idx}`)?.value||rec.freq||'monthly';
+  const newDay=parseInt(document.getElementById(`ee-day-${idx}`)?.value)||rec.day||1;
+  const newDesc=document.getElementById(`ee-desc-${idx}`)?.value??rec.desc;
+  if(!newAmt||newAmt<=0){toast('Wpisz prawidłową kwotę');return;}
+  rec.cat=newCat;rec.amt=newAmt;rec.freq=newFreq;rec.day=newDay;rec.desc=newDesc;
+  const newDescStr=`${rec.cat} · ${rec.amt} € · ${rec.freq}`;
+  logAudit('edit_expense',`Edited bill: ${rec.cat}`,oldDesc,newDescStr);
+  saveData();renderAll();toast('Opłata zaktualizowana ✓');
+}
+
+function saveEditGoal(idx){
+  const rec=data.goals[idx];if(!rec)return;
+  if(!canDelete(rec))return;
+  const oldDesc=`${rec.name} · target: ${rec.target} €`;
+  const newName=document.getElementById(`ge-name-${idx}`)?.value.trim()||rec.name;
+  const newEmoji=document.getElementById(`ge-emoji-${idx}`)?.value.trim()||rec.emoji||'🎯';
+  const newTarget=parseFloat(document.getElementById(`ge-target-${idx}`)?.value)||rec.target;
+  const newMonthly=parseFloat(document.getElementById(`ge-monthly-${idx}`)?.value)||0;
+  const newDeadline=document.getElementById(`ge-deadline-${idx}`)?.value||rec.deadline||'';
+  if(!newName||!newTarget||newTarget<=0){toast('Wpisz nazwę i kwotę celu');return;}
+  rec.name=newName;rec.emoji=newEmoji;rec.target=newTarget;rec.monthly=newMonthly;rec.deadline=newDeadline;
+  // Guard: current savings cannot exceed new target
+  if(rec.current>rec.target)rec.current=rec.target;
+  const newDescStr=`${rec.name} · target: ${rec.target} €`;
+  logAudit('edit_goal',`Edited goal: ${rec.name}`,oldDesc,newDescStr);
+  saveData();renderAll();toast('Cel zaktualizowany ✓');
+}
+
+function toggleGoalSavings(idx){
+  closeGoalSavings(); // close any open form first
+  const el=document.getElementById('goal-savings-'+idx);
+  if(el){el.classList.add('open');document.getElementById('goal-sav-amt-'+idx)?.focus();}
+}
+
+function closeGoalSavings(){
+  document.querySelectorAll('.goal-savings-form').forEach(f=>f.classList.remove('open'));
+}
+
+function addGoalSavings(idx){
+  const amtEl=document.getElementById('goal-sav-amt-'+idx);
+  const amt=parseFloat(amtEl?.value)||0;
+  if(!amt||amt<=0){toast('Wpisz prawidłową kwotę');return;}
+  const goal=data.goals[idx];
+  if(!goal)return;
+  const before=goal.current;
+  // DR-002: goal.current += amount — simple, intentional
+  goal.current=Math.min(goal.current+amt, goal.target);
+  const after=goal.current;
+  logAudit('goal_progress',`Saved ${amt.toLocaleString('pl-PL')} € towards: ${goal.name}`,
+    before.toLocaleString('pl-PL')+' €', after.toLocaleString('pl-PL')+' €');
+  saveData();
+  renderAll();
+  if(after>=goal.target){
+    toast('🎉 Cel osiągnięty: '+goal.name+'!');
+  }else{
+    toast('€'+amt.toLocaleString('pl-PL')+' odłożono na '+goal.name+' ✓');
+  }
+}
+
 // ── MOBILE HELPERS ──
 function openMobMenu(){
   document.getElementById('mob-menu-overlay').classList.add('open');
@@ -2830,6 +3090,8 @@ function closeMobMenuBtn(){
     if(dx<-40&&dy<30)closeMobMenuBtn();
   },{passive:true});
 })();
+
+initFreqHints();
 </script>
 </body>
 </html>
