@@ -1776,7 +1776,7 @@ function calcWI(){
 function renderWIHistory(){
   const el=document.getElementById('wi-history');if(!el)return;
   const hist=data.wiHistory||[];
-  if(!hist.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);">You haven't checked anything yet.</div>';return;}
+  if(!hist.length){el.innerHTML='<div style="font-size:13px;color:var(--text-soft);">You have not checked anything yet.</div>';return;}
   const rc={low:'var(--mint-dark)',med:'var(--amber-dark)',high:'var(--red)'};
   const rl={low:'bezpieczny',med:'uwaga',high:'ryzyko'};
   el.innerHTML=hist.map(h=>`<div class="lrow">
@@ -2800,7 +2800,7 @@ function renderFamilyUserSwitcher(){
           <option value="child" ${role==='child'?'selected':''}>🌱 Child</option>
         </select>`:''}
         <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" onclick="switchUser(${i})" ${isCurrent?'disabled':''}>
-          ${isCurrent?'✓ You're here':'Switch'}
+          ${isCurrent?'✓ Here':'Switch'}
         </button>
         ${isAdmin&&i>0?`<button class="btn-icon" onclick="removeFamilyMember(${i})" title="Remove from family"><i class="ti ti-trash"></i></button>`:''}
       </div>
