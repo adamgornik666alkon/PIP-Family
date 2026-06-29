@@ -2007,7 +2007,9 @@ function renderExpenses(){
         </div>
       </div>
     </div>`;
-  })()
+  })()).join('');
+  const t=document.getElementById('exp-list-title');
+  if(t)t.textContent=`Fixed Bills · ~${Math.round(totalExpenses()).toLocaleString('en-IE')} €/mo.`;
 }
 function addExpense(){
   if(!canAdd('expense'))return;
