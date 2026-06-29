@@ -2231,23 +2231,7 @@ function renderAll(){
   if(auditNav)auditNav.style.display=getPerm('audit')?'':'none';
 }
 
-// Init
-loadData();
-if(isNewUser()){
-  showOnboarding();
-}else{
-  // currentUser already restored in loadData() via memberId
-  if(!currentUser&&data.family&&data.family.length){
-    currentUser=data.family[0];
-    if(currentUser?.memberId)localStorage.setItem('pip_active_member_id',currentUser.memberId);
-  }
-  renderAll();
-}
-// Set today's date default in event form
-const todayStr=new Date().toISOString().split('T')[0];
-const evDateEl=document.getElementById('ev-date');
-if(evDateEl)evDateEl.value=todayStr;
-initFreqHints();
+// Init moved to onboarding script block
 </script>
 
 <!-- ── ONBOARDING OVERLAY ── -->
@@ -2652,6 +2636,24 @@ function obFinish(){
     <div class="ob-summary-row"><span class="ob-summary-label">Financial goals</span><span class="ob-summary-val">${data.goals.length}</span></div>`;
   obGo(5);
 }
+
+// Init — runs after onboarding functions are defined
+loadData();
+if(isNewUser()){
+  showOnboarding();
+}else{
+  // currentUser already restored in loadData() via memberId
+  if(!currentUser&&data.family&&data.family.length){
+    currentUser=data.family[0];
+    if(currentUser?.memberId)localStorage.setItem('pip_active_member_id',currentUser.memberId);
+  }
+  renderAll();
+}
+// Set today's date default in event form
+const todayStr=new Date().toISOString().split('T')[0];
+const evDateEl=document.getElementById('ev-date');
+if(evDateEl)evDateEl.value=todayStr;
+initFreqHints();
 </script>
 
 
@@ -2876,12 +2878,21 @@ function showFamAddForm(){
 }
 
 function famAddMember(){
-  if(!canEdit('family'))return;
+  // Allow creation when family is empty (first admin bootstrap)
+  if(data.family.length>0&&!canEdit('family'))return;
   const name=document.getElementById('fam-name').value.trim();
   const cls=document.getElementById('fam-cls').value;
-  const role=document.getElementById('fam-role').value;
+  // First person always becomes admin
+  const role=data.family.length===0?'admin':document.getElementById('fam-role').value;
   if(!name){toast('Enter a name!');return;}
-  data.family.push({name,initials:name.slice(0,2).toUpperCase(),cls,permission:role,role:role==='child'?'child':'adult',memberId:generateMemberId()});
+  const newMember={name,initials:name.slice(0,2).toUpperCase(),cls,permission:role,role:role==='child'?'child':'adult',memberId:generateMemberId()};
+  data.family.push(newMember);
+  // If this is the first person, make them currentUser immediately
+  if(data.family.length===1){
+    currentUser=data.family[0];
+    data.onboardingComplete=true;
+    try{localStorage.setItem('pip_active_member_id',currentUser.memberId);}catch(e){}
+  }
   logAudit('add_member',`Added family member: ${name} (${role})`);
   document.getElementById('fam-name').value='';
   document.getElementById('family-add-member-form').style.display='none';
