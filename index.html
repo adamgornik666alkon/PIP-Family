@@ -1132,7 +1132,7 @@ function logAudit(action,desc,oldVal,newVal){
   // Keep last 200 entries
   if(data.auditLog.length>200)data.auditLog.length=200;
 }
-function isNewUser(){return !data.onboardingComplete;}
+function isNewUser(){return !data.onboardingComplete||!data.family||data.family.length===0;}
 function loadDemo(){
   data=JSON.parse(JSON.stringify(DEMO));
   saveData();renderAll();hideOnboarding();
@@ -2766,6 +2766,7 @@ function renderFamilyUserSwitcher(){
       <div style="font-size:14px;font-weight:600;color:var(--plum);margin-bottom:6px;">No family members</div>
       <div style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Add your first person to get started.</div>
     </div>`;
+    showFamAddForm();
     return;
   }
   const roleLabel={admin:'👑 Administrator',adult:'✅ Adult',child:'🌱 Child'};
