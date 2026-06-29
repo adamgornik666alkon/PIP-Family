@@ -874,7 +874,7 @@ code{font-family:'SF Mono','Fira Code',monospace;background:var(--sand-dark);pad
           </select>
         </div>
         <div style="display:flex;gap:8px;margin-top:4px;">
-          <button class="btn btn-primary" onclick="famAddMember()"><i class="ti ti-plus"></i> Dodaj</button>
+          <button class="btn btn-primary" onclick="famAddMember()"><i class="ti ti-plus"></i> Add</button>
           <button class="btn btn-ghost" onclick="document.getElementById('family-add-member-form').style.display='none';">Cangoal</button>
         </div>
       </div>
@@ -1477,7 +1477,7 @@ function renderCalTimeline(){
   const upcoming=getUpcomingEvents(45).slice(0,10);
   if(!upcoming.length){el.innerHTML=`<div style="text-align:center;padding:20px;">
   <div style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">Add income and bills to see upcoming events.</div>
-  <button class="btn btn-ghost" onclick="go('income')" style="font-size:12px;padding:7px 14px;"><i class="ti ti-cash"></i> Dodaj dochody</button>
+  <button class="btn btn-ghost" onclick="go('income')" style="font-size:12px;padding:7px 14px;"><i class="ti ti-cash"></i> Add income</button>
 </div>`;return;}
   let bal=data.balance||0;
   el.innerHTML=upcoming.map(ev=>{
@@ -1651,7 +1651,7 @@ function renderGoalsGrid(){
   <div style="font-size:36px;margin-bottom:12px;">🎯</div>
   <div style="font-family:'Lora',serif;font-size:16px;font-weight:600;color:var(--plum);margin-bottom:8px;">No goals yet</div>
   <div style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">Add your first dream — holiday, car, emergency fund.</div>
-  <button class="btn btn-primary" onclick="go('goals-edit')" style="margin:0 auto;"><i class="ti ti-plus"></i> Dodaj pierwszy goal</button>
+  <button class="btn btn-primary" onclick="go('goals-edit')" style="margin:0 auto;"><i class="ti ti-plus"></i> Add your first goal</button>
 </div>`;return;}
   el.innerHTML=data.goals.map(g=>{
     const pct=Math.round(Math.min(100,g.target>0?g.current/g.target*100:0));
@@ -2653,14 +2653,13 @@ if(isNewUser()){
 const todayStr=new Date().toISOString().split('T')[0];
 const evDateEl=document.getElementById('ev-date');
 if(evDateEl)evDateEl.value=todayStr;
-initFreqHints();
 </script>
 
 
 <!-- ── BOTTOM NAV (mobile only) ── -->
 <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
   <button class="bn-item active" id="bn-home" onclick="go('home');bnActive('home')">
-    <i class="ti ti-home" aria-hidden="true"></i>Cele
+    <i class="ti ti-home" aria-hidden="true"></i>Goals
   </button>
   <button class="bn-item" id="bn-calendar" onclick="go('calendar');bnActive('calendar')">
     <i class="ti ti-calendar-event" aria-hidden="true"></i>Calendar
@@ -3131,6 +3130,8 @@ function closeMobMenuBtn(){
     if(dx<-40&&dy<30)closeMobMenuBtn();
   },{passive:true});
 })();
+
+initFreqHints();
 </script>
 </body>
 </html>
