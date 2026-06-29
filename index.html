@@ -940,7 +940,7 @@ const DEMO={
     {cat:'Insurance',amt:800,freq:'annual',desc:'Car + life insurance',day:20},
     {cat:'Internet / phone',amt:90,freq:'monthly',desc:'',day:12},
     {cat:'Subscriptions',amt:75,freq:'monthly',desc:'Netflix, Spotify',day:8},
-    {cat:'Children's activities',amt:105,freq:'monthly',desc:'Swimming',day:1},
+    {cat:"Children's activities",amt:105,freq:'monthly',desc:'Swimming',day:1},
     {cat:'Pocket money',amt:20,freq:'weekly',weekday:5,desc:'',day:5}
   ],
   goals:[
@@ -1740,7 +1740,7 @@ function calcWI(){
   }
 
   const goalVacation=data.goals.find(g=>g.name.toLowerCase().includes('wakacje'));
-  let goalMsg='Won't affect your goals.';
+  let goalMsg="Won't affect your goals.";
   if(risk==='high')goalMsg='May delay reaching your goals.';
   else if(risk==='med'&&goalVacation){
     const delay=Math.ceil(amt/(goalVacation.monthly||300)*4);
@@ -1863,7 +1863,7 @@ function renderScore(){
   if(savRate<0.2)tl.push({icon:'💡',text:'Try saving at least 20% of your income — even small steps make a difference.'});
   if(goalProg<0.5)tl.push({icon:'🎯',text:'Wyznaczcispecific monthly contributions for each goal — it will speed up progress.'});
   if(badD>goodD)tl.push({icon:'🌟',text:'Every good decision counts — start recording your small everyday savings.'});
-  if((data.calEvents||[]).length===0)tl.push({icon:'📅',text:'Dodajcie zevents to the Calendar — you'll know what's coming.'});
+  if((data.calEvents||[]).length===0)tl.push({icon:'📅',text:`Add events to the Calendar — you'll know what's coming.`});
   if(!tl.length)tl.push({icon:'🏆',text:'Great score! Keep up this pace.'});
   tips.innerHTML=tl.map(t=>`<div style="display:flex;gap:11px;align-items:flex-start;padding:11px 13px;background:var(--plum-pale);border-radius:var(--r-sm);"><span style="font-size:19px;flex-shrink:0;">${t.icon}</span><span style="font-size:13px;color:var(--plum);line-height:1.5;">${t.text}</span></div>`).join('');
 }
@@ -2177,7 +2177,7 @@ function renderGreeting(){
   }
   if(subEl){
     if(data.goals&&data.goals.length>0){
-      subEl.textContent='Let's see how your family's goals are progressing.';
+      subEl.textContent="Let's see how your family's goals are progressing.";
     }else if(fam.length>0){
       subEl.textContent='Zacznijcie od dodania pierwszego goalu rodzinnego.';
     }else{
@@ -2727,7 +2727,7 @@ function renderCalEventList(){
       <button class="btn-icon" onclick="removeCalEvent(${i});renderCalEventList();" title="Remove"><i class="ti ti-trash"></i></button>
     </div>`;
   }).join('');
-  listEl.innerHTML+='<button class="btn btn-ghost" style="margin-top:10px;font-size:12px;width:100%;justify-content:center;" onclick="document.getElementById('cal-event-list').style.display='none';document.getElementById('cal-timeline').style.display='';">← Back to list</button>';
+  listEl.innerHTML+=`<button class="btn btn-ghost" style="margin-top:10px;font-size:12px;width:100%;justify-content:center;" onclick="document.getElementById('cal-event-list').style.display='none';document.getElementById('cal-timeline').style.display='';">← Back to list</button>`;
 }
 
 function removeCalEvent(idx){
